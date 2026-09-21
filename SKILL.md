@@ -1,108 +1,149 @@
 ---
 name: ux-laws
 description: >-
-  Evaluate, critique, and guide UI/UX designs, interaction patterns, and user flows
-  using 20 core UX laws and cognitive psychology principles (including Hick's Law,
-  Fitts's Law, Miller's Law, Peak-End Rule, and Doherty Threshold).
+  Evaluate, critique, and audit UI/UX designs, web pages, and application flows
+  using 20 core UX laws and cognitive psychology principles. Includes a standardized
+  scoring rubric, N/A filtering rules, hit-area measurement heuristics (stretched-link
+  detection), and a site-type applicability matrix.
 ---
 
 # UX & Interaction Design Laws Skill
 
-This skill equips the AI agent with a rigorous framework for evaluating, critiquing, and refining digital product interfaces, design systems, and interaction workflows based on 20 fundamental laws of UX and human-computer interaction (HCI).
+This skill equips the AI agent with a rigorous, reproducible framework for evaluating, critiquing, and scoring digital product interfaces, design systems, and code implementations against 20 fundamental laws of UX and human-computer interaction (HCI).
 
 ---
 
-## The 20 Fundamental UX Laws
+## 1. Audit Protocol & Standardized Scoring
 
-### 1. Hick's Law
-- **Core Principle**: The time required to make a decision increases logarithmically with the number and complexity of choices.
-- **Application**: Minimize navigation choices, break complex multi-step processes into bite-sized funnels, highlight a single primary call-to-action (CTA).
+To ensure comparability between runs, across different pages, and among different auditors, all reviews must adhere to this standardized scoring rubric and output structure.
 
-### 2. Fitts's Law
-- **Core Principle**: The time to acquire a target is a function of the distance to the target and the width of the target.
-- **Application**: Make interactive controls large enough to tap/click comfortably (min 44x44px or 48x48px on mobile). Place critical buttons within natural thumb or cursor zones.
+### Scoring Scale per Law
+Each applicable law is evaluated on a 3-tier scale:
 
-### 3. Jakob's Law
-- **Core Principle**: Users spend most of their time on other products. They expect your product to work similarly to what they already know.
-- **Application**: Avoid reinventing standard UI paradigms (e.g., e-commerce shopping cart at top-right, search bar patterns, standard form layouts).
+| Rating | Points | Definition | Criteria |
+| :--- | :---: | :--- | :--- |
+| **Pass** | `1.0` | Compliant | The design follows the principle cleanly without notable friction or anti-patterns. |
+| **Warning** | `0.5` | Minor Friction | Minor inconsistency or non-blocking defect (e.g., button is 38px instead of 44px, or secondary CTA has slight visual over-emphasis). |
+| **Fail** | `0.0` | Violation | Clear breach of the principle causing cognitive overload, interaction failure, or disorientation. |
+| **N/A** | `Excluded` | Not Applicable | The principle does not apply to this surface type or component (see Site-Type Filter). |
 
-### 4. Law of Proximity
-- **Core Principle**: Objects that are near each other are perceived as a unified group or sharing a relationship.
-- **Application**: Place labels immediately adjacent to their input fields. Ensure spacing between distinct sections is noticeably larger than spacing between related items.
-
-### 5. Miller's Law
-- **Core Principle**: The average human working memory can only hold 7 ± 2 chunks of information simultaneously.
-- **Application**: Chunk long strings of data (phone numbers, credit cards, verification codes). Structure complex dashboards with clear categories.
-
-### 6. Doherty Threshold
-- **Core Principle**: Productivity and flow soar when human and computer interact at a pace under 400ms where neither waits on the other.
-- **Application**: Provide optimistic UI updates, immediate feedback states on button taps, and skeleton screens instead of blank spinners for async operations.
-
-### 7. Von Restorff Effect (Isolation Effect)
-- **Core Principle**: When multiple similar items are present, the one that differs from the rest is most likely to be remembered.
-- **Application**: Make primary pricing tiers ("Most Popular"), critical alerts, or primary conversion buttons visually distinct through contrast, color, or elevation.
-
-### 8. Minimize Target Distance
-- **Core Principle**: Reducing the physical travel distance to the next intended action accelerates completion and lowers fatigue.
-- **Application**: Use contextual menus, inline editing, and floating action buttons near the active work area instead of forcing users to traverse across the screen.
-
-### 9. Serial Position Effect
-- **Core Principle**: Users remember the first (primacy) and last (recency) items in a sequence best, and forget the middle.
-- **Application**: Place the most critical navigation links at the start and end of navigation bars or lists. Put secondary actions in the middle.
-
-### 10. Peak-End Rule
-- **Core Principle**: Experiences are judged primarily by how users felt at their emotional peak (best or worst point) and at the very end.
-- **Application**: Celebrate milestones and task completions (delightful success states), and design error recovery flows with extreme empathy.
-
-### 11. Zeigarnik Effect
-- **Core Principle**: Incomplete or interrupted tasks remain active in human memory much longer than finished ones.
-- **Application**: Use progress bars, step indicators, and onboarding checklists to tap into the human drive for task closure.
-
-### 12. Law of Prägnanz (Law of Simplicity)
-- **Core Principle**: The human eye interprets ambiguous or complex shapes in the simplest, most orderly form possible.
-- **Application**: Avoid cluttered or overlapping geometry. Use clean grids and familiar rectangular containers to minimize visual noise.
-
-### 13. Law of Similarity
-- **Core Principle**: Elements that share visual characteristics (color, shape, styling) are perceived as having the same role or function.
-- **Application**: Keep styling uniform across all interactive buttons, links, and system states. Never style non-clickable text like a link.
-
-### 14. Uniform Connectedness
-- **Core Principle**: Visually connected elements (via borders, lines, or shared container backgrounds) are perceived as more strongly related than elements with no explicit link.
-- **Application**: Group form sections or list items inside explicit cards, background panels, or connected step-flows.
-
-### 15. Tesler's Law (Law of Conservation of Complexity)
-- **Core Principle**: Every application contains an irreducible amount of complexity. It must either be absorbed by the design/engineering or dealt with by the user.
-- **Application**: Strive to absorb complexity behind the scenes (smart defaults, auto-detection, sensible presets) rather than exposing dozens of manual configuration knobs to the user.
-
-### 16. Postel's Law (Robustness Principle)
-- **Core Principle**: Be liberal in what you accept, and conservative in what you send.
-- **Application**: Allow flexible user input (accept dates in multiple formats, strip spaces and formatting from phone/card numbers) while rendering clean, predictable feedback.
-
-### 17. Aesthetic-Usability Effect
-- **Core Principle**: Users perceive aesthetically pleasing designs as more usable and are significantly more forgiving of minor usability hiccups.
-- **Application**: Invest in consistent typography, refined spacing scales, and visual polish; aesthetics directly enhance perceived quality and trust.
-
-### 18. Parkinson's Law
-- **Core Principle**: Work expands to fill the time allotted for its completion.
-- **Application**: Streamline task flows with autofill, quick defaults, and transparent completion estimates so users do not linger or abandon tasks.
-
-### 19. Occam's Razor
-- **Core Principle**: When faced with competing solutions that achieve the same result, the simplest one with the fewest assumptions is best.
-- **Application**: Eliminate redundant fields, decorative widgets, and non-essential confirmation steps.
-
-### 20. Pareto Principle (80/20 Rule)
-- **Core Principle**: Approximately 80% of user activity and value stems from 20% of core features.
-- **Application**: Dedicate prime screen real estate to the critical 20% of actions; tuck niche or advanced features into secondary menus.
+### The N/A Rule (Mandatory)
+> [!IMPORTANT]
+> **Never grade a law that does not apply to the surface.** 
+> An agent must NEVER penalize a design or invent violations for principles that are non-applicable to the surface type (e.g., grading Postel's Law on a static blog, or Zeigarnik Effect on a single landing hero).
+>
+> **Score Formula:**
+> $$\text{UX Health Score} = \left( \frac{\sum \text{Points on Applicable Laws}}{\text{Total Number of Applicable Laws (Excluding N/A)}} \right) \times 100\%$$
+>
+> - **90% – 100%**: Production-grade / Optimal UX
+> - **75% – 89%**: Good (Minor polish or non-blocking friction detected)
+> - **60% – 74%**: Needs Work (Multiple measurable law violations)
+> - **< 60%**: Critical Redesign Required
 
 ---
 
-## Agent Instructions: Review & Audit Workflow
+## 2. Site-Type Applicability Matrix
 
-When asked to critique an interface, analyze a wireframe, or review code:
+Before evaluating, **classify the surface type**. Only score laws that are `Core` or `Contextual`. Mark all others as `N/A` unless specific interactive widgets justify their inclusion.
 
-1. **Identify the Core Objective**: Determine what the user is trying to accomplish on this screen or flow.
-2. **Apply Relevant Heuristics**: Select the 3–5 laws most pertinent to the context (e.g., Fitts's & Target Distance for mobile navigation; Hick's & Miller's for search/onboarding).
-3. **Structure Feedback with Concrete References**:
-   - Cite the law by name.
-   - Describe the exact violation or area for improvement.
-   - Provide an actionable, specific solution (code snippet, layout modification, or copy adjustment).
+| Principle | Marketing & Landing | SaaS & Dashboards | Forms & Wizards | Content & Docs |
+| :--- | :---: | :---: | :---: | :---: |
+| **1. Hick's Law** | **Core** | Contextual | **Core** | Contextual |
+| **2. Fitts's Law** | Contextual (CTAs) | **Core** | **Core** | Contextual (Nav) |
+| **3. Jakob's Law** | **Core** | **Core** | **Core** | **Core** |
+| **4. Law of Proximity** | **Core** | **Core** | **Core** | **Core** |
+| **5. Miller's Law** | Contextual | **Core** | **Core** | Contextual |
+| **6. Doherty Threshold** | Contextual | **Core** | **Core** | Contextual |
+| **7. Von Restorff Effect** | **Core** | Contextual | Contextual | Contextual |
+| **8. Minimize Target Distance** | Contextual | **Core** | **Core** | N/A |
+| **9. Serial Position Effect** | **Core** | Contextual | N/A | **Core** |
+| **10. Peak-End Rule** | **Core** | Contextual | **Core** | N/A |
+| **11. Zeigarnik Effect** | N/A* | Contextual | **Core** | N/A |
+| **12. Law of Prägnanz** | **Core** | **Core** | **Core** | **Core** |
+| **13. Law of Similarity** | **Core** | **Core** | **Core** | **Core** |
+| **14. Uniform Connectedness** | **Core** | **Core** | **Core** | **Core** |
+| **15. Tesler's Law** | N/A* | **Core** | **Core** | N/A |
+| **16. Postel's Law** | N/A* | **Core** | **Core** | N/A |
+| **17. Aesthetic-Usability Effect** | **Core** | Contextual | Contextual | Contextual |
+| **18. Parkinson's Law** | N/A* | Contextual | **Core** | N/A |
+| **19. Occam's Razor** | **Core** | **Core** | **Core** | **Core** |
+| **20. Pareto Principle** | **Core** | **Core** | Contextual | Contextual |
+
+*\*Note on Marketing N/A*: If a marketing page contains an interactive pricing calculator, lead capture form, or onboarding teaser, evaluate Postel, Tesler, Parkinson, or Zeigarnik **strictly for that specific sub-component**, not the page as a whole.
+
+---
+
+## 3. Hit-Area Measurement & The Stretched-Link Caveat
+
+When inspecting code or measuring touch/click targets for **Fitts's Law** and **Minimize Target Distance**, automated tools and AI agents frequently generate false-positive violations by measuring only the inner anchor's direct bounding box.
+
+### The Stretched-Link Rule
+> [!CAUTION]
+> **Do not measure `<a>` or `<button>` inline bounding boxes in isolation.**
+> Modern accessible web patterns (e.g., Bootstrap `.stretched-link`, Tailwind `after:absolute after:inset-0`, or CSS pseudo-elements) make an entire card or container clickable while maintaining semantic HTML.
+
+#### Verification Procedure:
+1. **Inspect for Pseudo-Elements**: Check if the anchor has a `::before` or `::after` pseudo-element with:
+   - `position: absolute`
+   - `inset: 0` (or `top: 0; left: 0; right: 0; bottom: 0;` / `width: 100%; height: 100%;`)
+2. **Locate the Positioned Ancestor**: Follow the DOM tree up to the nearest ancestor with `position: relative`, `position: absolute`, or `position: fixed`.
+3. **Measure the True Click Surface**: The effective touch target is the bounding box of that **positioned ancestor**, NOT the inline text or SVG icon.
+4. **Inspect Container Handlers**: Check if the parent card or row has an active click handler (`onClick`, `@click`, `cursor: pointer`) or card-level event delegation.
+
+---
+
+## 4. The 20 Fundamental UX Laws Reference
+
+1. **Hick's Law**: Decision time increases logarithmically with options ($T = b \cdot \log_2(n+1)$). Keep primary choices limited; use progressive disclosure.
+2. **Fitts's Law**: Target acquisition time depends on target size and distance. Ensure effective hit areas $\ge 44 \times 44\text{px}$ (check for stretched links!). Place primary actions within natural reach zones.
+3. **Jakob's Law**: Users expect your product to behave like the products they already use. Adhere to common conventions and standard affordances.
+4. **Law of Proximity**: Related items belong together visually. Space between distinct groups must be visibly greater than space between grouped elements.
+5. **Miller's Law**: Working memory capacity is $7 \pm 2$ chunks. Chunk complex strings and limit top-level navigation categories to 5–7 items.
+6. **Doherty Threshold**: Keep response feedback under 400ms. Use optimistic UI, skeleton loaders, and instant pressed-states to sustain user flow.
+7. **Von Restorff Effect**: The element that differs from its surroundings is best remembered. Ensure high visual contrast for primary CTAs or recommended choices.
+8. **Minimize Target Distance**: Reduce cursor/thumb travel distance. Employ contextual menus, floating actions, or inline controls near the active task.
+9. **Serial Position Effect**: Users best retain the first (primacy) and last (recency) items in a sequence. Place high-value navigation at the outer edges.
+10. **Peak-End Rule**: Experiences are judged by their emotional peak and final moments. Polish milestone completion states and design empathetic error flows.
+11. **Zeigarnik Effect**: Incomplete tasks stick in memory. Use visual progress bars, checklist indicators, and step completion meters.
+12. **Law of Prägnanz**: The human eye organizes visual complexity into the simplest geometric forms. Keep container shapes clean, aligned, and predictable.
+13. **Law of Similarity**: Elements sharing visual attributes (color, typography, shape) are assumed to have the same function. Maintain consistent interaction styling.
+14. **Uniform Connectedness**: Connected elements (via borders, lines, or shared container cards) are perceived as more strongly related than elements linked only by proximity.
+15. **Tesler's Law (Conservation of Complexity)**: Systems possess an inherent amount of complexity. Absorb it through smart backend defaults rather than offloading it to the user.
+16. **Postel's Law (Robustness Principle)**: Be liberal in what you accept, conservative in what you send. Accept diverse user input formats (dashes, spaces) and normalize behind the scenes.
+17. **Aesthetic-Usability Effect**: Attractive designs are perceived as more usable and tolerate minor defects. Visual polish builds fundamental trust.
+18. **Parkinson's Law**: Tasks expand to fill available time. Provide autofill, sensible defaults, and clear completion estimates to avoid friction.
+19. **Occam's Razor**: Between two designs that solve the problem equally well, the one with fewer elements and assumptions is superior.
+20. **Pareto Principle (80/20 Rule)**: 80% of user activity centers around 20% of features. Allocate prime screen real estate exclusively to high-frequency actions.
+
+---
+
+## 5. Standard Output Template for Audits
+
+When generating a UX review, use this exact report format:
+
+```markdown
+# UX Law Audit: [Page / Component Name]
+
+- **Surface Type**: [Marketing & Landing | SaaS & Dashboard | Form & Wizard | Content & Docs]
+- **Overall UX Health Score**: **XX%** ([Pass Count] Pass, [Warning Count] Warning, [Fail Count] Fail, [N/A Count] N/A)
+
+---
+
+### Score Breakdown
+
+| Law | Status | Points | Observation / Finding |
+| :--- | :---: | :---: | :--- |
+| **1. Hick's Law** | Pass | 1.0 | Clear 3-tier pricing table with recommended tier highlighted. |
+| **2. Fitts's Law** | Pass | 1.0 | Card uses `.stretched-link` (`::after { inset: 0 }`); effective hit area is 320x240px. |
+| ... | ... | ... | ... |
+| **16. Postel's Law** | N/A | - | No user input fields on this static showcase section. |
+
+---
+
+### Key Violations & Recommended Fixes
+
+#### 1. [Law Name] – [Severity: Warning | Fail]
+- **Observed Violation**: [Specific description of the UX issue]
+- **Evidence / Location**: [DOM selector, screenshot reference, or CSS file]
+- **Actionable Remediation**: [Code snippet, layout modification, or copy fix]
+```

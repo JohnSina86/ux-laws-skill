@@ -12,7 +12,7 @@ Not linked from `SKILL.md`. Eval agents must not read it. Measured at 400x800 wi
 | :--- | :---: | :--- |
 | 1 Hick | Pass | One primary and one secondary action. |
 | 2 Fitts (size) | Warning | "Compare plans" 72x14 is far below the 44 goal **and sits 4px from the primary button** (mis-tap risk), so it is graded even though it is a secondary link. The primary button (106x64) meets the goal. |
-| 3 Jakob | Warning | A plain div carries a click handler (per the prompt) but has no pointer cursor, role or focusability, so there is no affordance for the action. Unconfirmed from page JavaScript. |
+| 3 Jakob | Pass | The CTA is a real link and there is no interception: the handler sits on a sibling div, not an ancestor of the links. |
 | 4 Proximity | Pass | Price, details and actions are grouped in one card. |
 | 5 Miller | N/A | No comparison table. |
 | 6 Doherty | Not assessed | `openCheckout` timing is unknown. |
@@ -22,7 +22,7 @@ Not linked from `SKILL.md`. Eval agents must not read it. Measured at 400x800 wi
 | 10 Peak-End | Not assessed | A conversion flow exists (checkout), but its result isn't in the evidence. |
 | 11 Zeigarnik | N/A | Single step. |
 | 12 Prägnanz | Pass | One card, simple stack. |
-| 13 Similarity | Pass | The button and the link look like what they are. |
+| 13 Similarity | **Fail** | The reverse case in the rubric: a plain div that looks like inert copy (grey panel, no cursor, no role) is interactive per the quoted script, so a tap while reading can launch checkout. Unconfirmed from page JavaScript, so report it as *unknown, confirm manually*. Graded here once, not again under Jakob. |
 | 14 Connectedness | Pass | The border groups the content. |
 | 15 Tesler | N/A | No application logic on this card. |
 | 16 Postel | N/A | No input fields. |
@@ -31,7 +31,7 @@ Not linked from `SKILL.md`. Eval agents must not read it. Measured at 400x800 wi
 | 19 Occam | Pass | No redundant elements. |
 | 20 Pareto | Not assessed | Needs usage data. |
 
-Counts: 8 Pass, 2 Warning, 0 Fail, 7 N/A, 3 Not assessed. Score (8 + 1.0) / 10 = **90%**, band Strong (no blocking Fail). Reasonable variation: Aesthetic-Usability and Von Restorff are render-dependent.
+Counts: 8 Pass, 1 Warning, 1 Fail, 7 N/A, 3 Not assessed. Score (8 + 0.5) / 10 = **85%**. Band: **Good, with friction** if the blocking rule is not applied, which is defensible while the handler is unconfirmed and the visible CTA still works. A grader should also accept Needs Work if the agent explicitly argues the hidden trigger sits on the task-critical path. Either way it must state its reasoning and say that a live check can change the grade. Reasonable variation: Aesthetic-Usability, Von Restorff and Minimize distance are render- or trigger-dependent.
 
 ## Conformance notes (not scored)
 - "Compare plans" (72x14, under 24px high) is undersized, but the **spacing test passes**: a 24px circle centred on its bounding box (centre about 36px from the button's edge) reaches neither the "Choose Pro" target nor another undersized target. So a 2.5.8 failure is **not established**. Note it as undersized and recommend padding, and keep it out of the score.

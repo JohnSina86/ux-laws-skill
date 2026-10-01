@@ -28,7 +28,7 @@ Hick · Fitts (target size) · Jakob · Proximity · Miller (memory load) · Doh
 
 Install a tagged release, so you get the reviewed version.
 
-> **Release status: pending.** The `v1.1.0` tag doesn't exist yet, so the commands below will fail until it's published. **Don't** install from the default branch instead: it still holds v1.0.0, without these fixes. Once the tag is published, the commands work as written, and `git -C <install dir> describe --tags` should print `v1.1.0`.
+> **Current release: `v1.1.0`.** To confirm an install, run `git -C <install dir> describe --tags`, which should print `v1.1.0`.
 
 ### Claude Code
 ```bash

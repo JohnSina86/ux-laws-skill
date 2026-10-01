@@ -7,7 +7,7 @@ Run this checklist before tagging. Each step is a manual check that doesn't need
 3. **Matrix parity:** the applicability matrix in `SKILL.md` and the scope lines in `references/principles-breakdown.md` say the same thing for every law.
 4. **Provenance:** re-check any citation you touched. Anything unconfirmed stays marked `unverified citation`. Update the "Verified on" date.
 5. **Pointers:** search for `SKILL.md §` and any link to a section or file that doesn't exist.
-6. **Interop:** every ui-styles ID in the `SKILL.md` interop table exists in the ui-styles style index, and every law number cited matches this skill's numbering.
+6. **Interop, both directions:** every ui-styles ID in the `SKILL.md` interop table exists in the ui-styles style index, and the laws listed per style equal the `ux-laws #N` citations in that index (including styles that have citations but no row, and rows that have no citation).
 7. **Fixtures and snippet:** serve `evals/fixtures/`, run `references/hit-testing.md` on both pages as described in `evals/README.md`, and confirm the documented results. No click may fire.
 8. **Evals:** run the four functional evals by hand with fresh sessions that don't read `examples/` or `evals/expected/`. Record the result in the release notes.
 9. **Tag:** `git tag -a vX.Y.Z -m vX.Y.Z` after merging, then update the README's install commands and the changelog.

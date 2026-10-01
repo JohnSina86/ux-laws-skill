@@ -10,7 +10,7 @@ metadata:
 
 A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX and HCI. Every grade must cite observable evidence. If the evidence isn't available, the law is reported as *Not assessed* instead of guessed.
 
-**Scope.** This skill grades usability heuristics. It does **not** certify accessibility: contrast, keyboard access, screen-reader semantics and WCAG conformance are out of scope, apart from the target-size note in §6. A high score doesn't mean a page is production-ready. State this in every report.
+**Scope.** This skill grades usability heuristics. It does **not** certify accessibility: contrast, keyboard access, screen-reader semantics and WCAG conformance are out of scope, apart from the target-size note in §6. A high score doesn't mean a page is production-ready. State this in every report. For WCAG and Lighthouse audits, a companion such as [web-quality-skills](https://github.com/addyosmani/web-quality-skills) covers what this skill doesn't.
 
 ---
 
@@ -193,25 +193,25 @@ The score breakdown **must contain one row for each of the 20 laws**, including 
 ```
 
 ### Audit-completeness checklist (check before sending)
-- [ ] One row for each of the 20 laws, with N/A and Not assessed rows present.
-- [ ] Evidence sources listed, and every Pass/Warning/Fail cites observable evidence.
-- [ ] Every N/A has an absent trigger; every Not assessed names the evidence needed.
+- [ ] One row for each of the 20 laws (including N/A and Not assessed), evidence sources listed, and every Pass/Warning/Fail citing observable evidence.
+- [ ] Every N/A cites the matrix's unconditional exclusion or the evidence that a Contextual trigger is absent; every Not assessed names the evidence needed.
 - [ ] Score and counts recomputed from the rows (denominator = Pass + Warning + Fail), and the band assigned from the unrounded score.
 - [ ] Blocking rule checked, and the scope note and conformance notes included.
 
 A worked example is in [`examples/sample-audit.md`](examples/sample-audit.md). Never use it as a source of answers for a new audit.
 
 ## 9. Working with `ui-styles`
-Grade structure, not aesthetic (section 5). When a page was built from a `ui-styles` style, these are the laws its risk most often touches. Use them as places to look, not as automatic findings:
+Grade structure, not aesthetic (section 5). The `ui-styles` index cites these laws against each style's risk. Use them as places to look, not as automatic findings. The two lists must agree, which `RELEASING.md` checks in both directions.
 
-| ui-styles ID | Look at |
+| Law to look at | ui-styles IDs |
 | :--- | :--- |
-| `neumorphism` | 13 Similarity (raised vs pressed states), 3 Jakob (affordances) |
-| `glassmorphism` | 12 Prägnanz and 17 Aesthetic-Usability (text over busy backdrops) |
-| `minimalism` | 3 Jakob (icon-only controls), 13 Similarity |
-| `scrapbook`, `surrealism` | 12 Prägnanz (rotated or overlapping interactive items) |
-| `maximalism` | 1 Hick and 12 Prägnanz in form-heavy flows |
-| `cyberpunk` | 3 Jakob (focus visibility with clipped shapes) |
+| 1 Hick | `maximalism` |
+| 3 Jakob (affordances, icon-only controls, focus visibility) | `cybercore`, `cyberpunk`, `minimalism`, `neumorphism`, `surrealism` |
+| 4 Proximity (grouping when shadows are heavy) | `claymorphism` |
+| 12 Prägnanz (rotated, overlapping or busy interactive items) | `glassmorphism`, `maximalism`, `scrapbook`, `surrealism` |
+| 13 Similarity (raised vs pressed states) | `neumorphism` |
+| 14 Uniform Connectedness (grouping) | `claymorphism` |
+| 17 Aesthetic-Usability (polish masking function) | `glassmorphism`, `neo-brutalism`, `sketch` |
 
 ## References
 - [`references/principles-breakdown.md`](references/principles-breakdown.md): each law's definition, scope and Do and Don't.

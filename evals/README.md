@@ -16,12 +16,12 @@ The worked audit in `examples/sample-audit.md` already contains its own answer, 
 4. Optional baseline: repeat without the skill and compare.
 
 ## Manual run: trigger evals
-Use the first 12 queries as the tuning set and the last 8 as held-out. Look at held-out results only after you finish editing the description. A query is correct when whether the skill loaded equals `should_trigger`.
+The queries alternate between positives and near-miss negatives, so each part of the split holds both labels. Use the first 12 queries as the tuning set and the last 8 as held-out. Look at held-out results only after you finish editing the description. A query is correct when whether the skill loaded equals `should_trigger`.
 
 ## Checking the hit-testing snippet
 Serve `fixtures/` over HTTP, open each page in a browser at a phone-sized viewport, and run the snippet in `references/hit-testing.md`:
 - `newsletter-card.html` with region `.promo` and target `.archive-link`: expect `interceptedControls` to list the input and the button.
-- `pricing-card.html` with region `.plan` and target `.plan-link`: expect `delegated-unknown` for the details panel. After attaching a click listener to `#plan-details` in DevTools, the result must not change (page JavaScript can't see it). After setting an inline `onclick` attribute on it, expect `delegated-possible`. Never fire a click.
+- `pricing-card.html` with region `.plan` and target `.plan-link`: expect `delegated-unknown` for the details panel and `occluded: 0`. After attaching a click listener to `#plan-details` in DevTools, the result must not change (page JavaScript can't see it). After setting an inline `onclick` attribute on it, expect `delegated-possible`. Never fire a click.
 
 ## Automated run (not run in this repository's release process)
 Anthropic's skill-creator ships `run_eval.py` and `run_loop.py`, which run trigger queries through the `claude` CLI and split the queries themselves. They need `claude -p`. The v1.2.0 release was prepared without that CLI, so the trigger set was reviewed by hand and **not** run through the automated tester.

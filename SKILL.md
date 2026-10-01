@@ -1,149 +1,192 @@
 ---
 name: ux-laws
 description: >-
-  Evaluate, critique, and audit UI/UX designs, web pages, and application flows
-  using 20 core UX laws and cognitive psychology principles. Includes a standardized
-  scoring rubric, N/A filtering rules, hit-area measurement heuristics (stretched-link
-  detection), and a site-type applicability matrix.
+  Audit and critique the UX of a page, flow or component against 20 UX laws
+  (Hick, Fitts, Jakob, Gestalt, Doherty, Peak-End and more), with an
+  evidence-based rubric, applicability matrix, "Not assessed" handling and
+  hit-area measurement rules. Use when asked to review, audit, score or critique
+  UX or interaction design. Not a WCAG/accessibility audit or a visual-style
+  critique; pair it with an accessibility review for conformance.
 ---
 
-# UX & Interaction Design Laws Skill
+# UX & Interaction Design Laws Skill (v1.1)
 
-This skill equips the AI agent with a rigorous, reproducible framework for evaluating, critiquing, and scoring digital product interfaces, design systems, and code implementations against 20 fundamental laws of UX and human-computer interaction (HCI).
+A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX and HCI. Every grade must cite observable evidence. If the evidence isn't available, the law is reported as *Not assessed* instead of guessed.
 
----
-
-## 1. Audit Protocol & Standardized Scoring
-
-To ensure comparability between runs, across different pages, and among different auditors, all reviews must adhere to this standardized scoring rubric and output structure.
-
-### Scoring Scale per Law
-Each applicable law is evaluated on a 3-tier scale:
-
-| Rating | Points | Definition | Criteria |
-| :--- | :---: | :--- | :--- |
-| **Pass** | `1.0` | Compliant | The design follows the principle cleanly without notable friction or anti-patterns. |
-| **Warning** | `0.5` | Minor Friction | Minor inconsistency or non-blocking defect (e.g., button is 38px instead of 44px, or secondary CTA has slight visual over-emphasis). |
-| **Fail** | `0.0` | Violation | Clear breach of the principle causing cognitive overload, interaction failure, or disorientation. |
-| **N/A** | `Excluded` | Not Applicable | The principle does not apply to this surface type or component (see Site-Type Filter). |
-
-### The N/A Rule (Mandatory)
-> [!IMPORTANT]
-> **Never grade a law that does not apply to the surface.** 
-> An agent must NEVER penalize a design or invent violations for principles that are non-applicable to the surface type (e.g., grading Postel's Law on a static blog, or Zeigarnik Effect on a single landing hero).
->
-> **Score Formula:**
-> $$\text{UX Health Score} = \left( \frac{\sum \text{Points on Applicable Laws}}{\text{Total Number of Applicable Laws (Excluding N/A)}} \right) \times 100\%$$
->
-> - **90% – 100%**: Production-grade / Optimal UX
-> - **75% – 89%**: Good (Minor polish or non-blocking friction detected)
-> - **60% – 74%**: Needs Work (Multiple measurable law violations)
-> - **< 60%**: Critical Redesign Required
+**Scope.** This skill grades usability heuristics. It does **not** certify accessibility: contrast, keyboard access, screen-reader semantics and WCAG conformance are out of scope, apart from the target-size note in §6. A high score doesn't mean a page is production-ready. State this in every report.
 
 ---
 
-## 2. Site-Type Applicability Matrix
+## 1. Evidence sources
 
-Before evaluating, **classify the surface type**. Only score laws that are `Core` or `Contextual`. Mark all others as `N/A` unless specific interactive widgets justify their inclusion.
+| Source | Can assess | Cannot assess |
+| :--- | :--- | :--- |
+| Live page (browser tools) | Layout, measured hit areas, interaction feedback, response timing, flows | Usage frequency, real user errors |
+| Source code (HTML/CSS/JS) | Structure, static hit-area estimates, validation logic, defaults | Rendered layout (estimate only), timing |
+| Screenshot / design file | Layout, grouping, hierarchy, visual emphasis | Hit areas, timing, behaviour |
+| Analytics / research data | Frequency (Pareto), errors, drop-off | — |
 
-| Principle | Marketing & Landing | SaaS & Dashboards | Forms & Wizards | Content & Docs |
-| :--- | :---: | :---: | :---: | :---: |
-| **1. Hick's Law** | **Core** | Contextual | **Core** | Contextual |
-| **2. Fitts's Law** | Contextual (CTAs) | **Core** | **Core** | Contextual (Nav) |
-| **3. Jakob's Law** | **Core** | **Core** | **Core** | **Core** |
-| **4. Law of Proximity** | **Core** | **Core** | **Core** | **Core** |
-| **5. Miller's Law** | Contextual | **Core** | **Core** | Contextual |
-| **6. Doherty Threshold** | Contextual | **Core** | **Core** | Contextual |
-| **7. Von Restorff Effect** | **Core** | Contextual | Contextual | Contextual |
-| **8. Minimize Target Distance** | Contextual | **Core** | **Core** | N/A |
-| **9. Serial Position Effect** | **Core** | Contextual | N/A | **Core** |
-| **10. Peak-End Rule** | **Core** | Contextual | **Core** | N/A |
-| **11. Zeigarnik Effect** | N/A* | Contextual | **Core** | N/A |
-| **12. Law of Prägnanz** | **Core** | **Core** | **Core** | **Core** |
-| **13. Law of Similarity** | **Core** | **Core** | **Core** | **Core** |
-| **14. Uniform Connectedness** | **Core** | **Core** | **Core** | **Core** |
-| **15. Tesler's Law** | N/A* | **Core** | **Core** | N/A |
-| **16. Postel's Law** | N/A* | **Core** | **Core** | N/A |
-| **17. Aesthetic-Usability Effect** | **Core** | Contextual | Contextual | Contextual |
-| **18. Parkinson's Law** | N/A* | Contextual | **Core** | N/A |
-| **19. Occam's Razor** | **Core** | **Core** | **Core** | **Core** |
-| **20. Pareto Principle** | **Core** | **Core** | Contextual | Contextual |
+Record which sources you had at the top of the report.
 
-*\*Note on Marketing N/A*: If a marketing page contains an interactive pricing calculator, lead capture form, or onboarding teaser, evaluate Postel, Tesler, Parkinson, or Zeigarnik **strictly for that specific sub-component**, not the page as a whole.
+## 2. Statuses and score
 
----
+| Status | Points | Use when |
+| :--- | :---: | :--- |
+| **Pass** | 1.0 | The evidence in §4 for Pass is observed. |
+| **Warning** | 0.5 | The Warning evidence is observed: real friction that doesn't block the task. |
+| **Fail** | 0.0 | The Fail evidence is observed: the task is blocked, mis-performed or seriously slowed. |
+| **N/A** | excluded | The law doesn't apply to this surface (§3), or a Contextual law's trigger is absent. |
+| **Not assessed** | excluded | The law applies, but the available sources can't show it (§1). List the evidence that would be needed. |
 
-## 3. Hit-Area Measurement & The Stretched-Link Caveat
+**Score formula:**
 
-When inspecting code or measuring touch/click targets for **Fitts's Law** and **Minimize Target Distance**, automated tools and AI agents frequently generate false-positive violations by measuring only the inner anchor's direct bounding box.
+$$\text{UX Score} = \frac{\sum \text{points}}{\text{Pass} + \text{Warning} + \text{Fail}} \times 100\%$$
 
-### The Stretched-Link Rule
-> [!CAUTION]
-> **Do not measure `<a>` or `<button>` inline bounding boxes in isolation.**
-> Modern accessible web patterns (e.g., Bootstrap `.stretched-link`, Tailwind `after:absolute after:inset-0`, or CSS pseudo-elements) make an entire card or container clickable while maintaining semantic HTML.
+- N/A and Not assessed are excluded from both the numerator and the denominator.
+- If **Pass + Warning + Fail = 0**, report **"No score — insufficient evidence"**. Never divide by zero or report 0%.
+- Worked examples: 9 Pass + 1 Not assessed gives 9 / 9 = **100%**. 6 Pass + 2 Warning + 1 Fail gives 7 / 9 = **78%**. 0 assessed gives **no score**.
 
-#### Verification Procedure:
-1. **Inspect for Pseudo-Elements**: Check if the anchor has a `::before` or `::after` pseudo-element with:
-   - `position: absolute`
-   - `inset: 0` (or `top: 0; left: 0; right: 0; bottom: 0;` / `width: 100%; height: 100%;`)
-2. **Locate the Positioned Ancestor**: Follow the DOM tree up to the nearest ancestor with `position: relative`, `position: absolute`, or `position: fixed`.
-3. **Measure the True Click Surface**: The effective touch target is the bounding box of that **positioned ancestor**, NOT the inline text or SVG icon.
-4. **Inspect Container Handlers**: Check if the parent card or row has an active click handler (`onClick`, `@click`, `cursor: pointer`) or card-level event delegation.
+**Blocking rule.** A Fail on a task-critical path (the primary conversion, checkout, sign-up or the main job of the screen) caps the band at **Needs Work**, whatever the percentage.
 
----
+**Bands (heuristic guidance, not certification):** 90–100% Strong · 75–89% Good, with friction · 60–74% Needs Work · below 60% Redesign recommended.
 
-## 4. The 20 Fundamental UX Laws Reference
+## 3. Applicability matrix
 
-1. **Hick's Law**: Decision time increases logarithmically with options ($T = b \cdot \log_2(n+1)$). Keep primary choices limited; use progressive disclosure.
-2. **Fitts's Law**: Target acquisition time depends on target size and distance. Ensure effective hit areas $\ge 44 \times 44\text{px}$ (check for stretched links!). Place primary actions within natural reach zones.
-3. **Jakob's Law**: Users expect your product to behave like the products they already use. Adhere to common conventions and standard affordances.
-4. **Law of Proximity**: Related items belong together visually. Space between distinct groups must be visibly greater than space between grouped elements.
-5. **Miller's Law**: Working memory capacity is $7 \pm 2$ chunks. Chunk complex strings and limit top-level navigation categories to 5–7 items.
-6. **Doherty Threshold**: Keep response feedback under 400ms. Use optimistic UI, skeleton loaders, and instant pressed-states to sustain user flow.
-7. **Von Restorff Effect**: The element that differs from its surroundings is best remembered. Ensure high visual contrast for primary CTAs or recommended choices.
-8. **Minimize Target Distance**: Reduce cursor/thumb travel distance. Employ contextual menus, floating actions, or inline controls near the active task.
-9. **Serial Position Effect**: Users best retain the first (primacy) and last (recency) items in a sequence. Place high-value navigation at the outer edges.
-10. **Peak-End Rule**: Experiences are judged by their emotional peak and final moments. Polish milestone completion states and design empathetic error flows.
-11. **Zeigarnik Effect**: Incomplete tasks stick in memory. Use visual progress bars, checklist indicators, and step completion meters.
-12. **Law of Prägnanz**: The human eye organizes visual complexity into the simplest geometric forms. Keep container shapes clean, aligned, and predictable.
-13. **Law of Similarity**: Elements sharing visual attributes (color, typography, shape) are assumed to have the same function. Maintain consistent interaction styling.
-14. **Uniform Connectedness**: Connected elements (via borders, lines, or shared container cards) are perceived as more strongly related than elements linked only by proximity.
-15. **Tesler's Law (Conservation of Complexity)**: Systems possess an inherent amount of complexity. Absorb it through smart backend defaults rather than offloading it to the user.
-16. **Postel's Law (Robustness Principle)**: Be liberal in what you accept, conservative in what you send. Accept diverse user input formats (dashes, spaces) and normalize behind the scenes.
-17. **Aesthetic-Usability Effect**: Attractive designs are perceived as more usable and tolerate minor defects. Visual polish builds fundamental trust.
-18. **Parkinson's Law**: Tasks expand to fill available time. Provide autofill, sensible defaults, and clear completion estimates to avoid friction.
-19. **Occam's Razor**: Between two designs that solve the problem equally well, the one with fewer elements and assumptions is superior.
-20. **Pareto Principle (80/20 Rule)**: 80% of user activity centers around 20% of features. Allocate prime screen real estate exclusively to high-frequency actions.
+Classify the surface first.
+- **Core:** always scored.
+- **Contextual:** scored only if the named trigger element is present. Name the trigger in the Observation column. If the trigger is absent, the law is N/A.
+- **N/A:** not scored.
 
----
+| # | Law | Marketing & Landing | SaaS & Dashboards | Forms & Wizards | Content & Docs |
+| :-: | :--- | :---: | :---: | :---: | :---: |
+| 1 | Hick's Law | Core | Contextual (menus, filters) | Core | Contextual (navigation) |
+| 2 | Fitts's Law (target size) | Contextual (CTAs) | Core | Core | Contextual (navigation) |
+| 3 | Jakob's Law | Core | Core | Core | Core |
+| 4 | Law of Proximity | Core | Core | Core | Core |
+| 5 | Miller's Law (memory load) | Contextual (comparison tables) | Core | Core | Contextual (long procedures) |
+| 6 | Doherty Threshold | Contextual (interactive widget) | Core | Core | Contextual (search) |
+| 7 | Von Restorff Effect | Core | Contextual (primary action) | Contextual (primary action) | Contextual (callouts) |
+| 8 | Minimize Target Distance | Contextual (interactive widget) | Core | Core | N/A |
+| 9 | Serial Position Effect | Core | Contextual (navigation) | Contextual (step lists, long option lists) | Core |
+| 10 | Peak-End Rule | Contextual (conversion confirmation) | Contextual (task completion) | Core | N/A |
+| 11 | Zeigarnik Effect | Contextual (multi-step widget) | Contextual (onboarding checklist) | Core | N/A |
+| 12 | Law of Prägnanz | Core | Core | Core | Core |
+| 13 | Law of Similarity | Core | Core | Core | Core |
+| 14 | Uniform Connectedness | Core | Core | Core | Core |
+| 15 | Tesler's Law | Contextual (interactive widget) | Core | Core | N/A |
+| 16 | Postel's Law | Contextual (input fields) | Core | Core | N/A |
+| 17 | Aesthetic-Usability Effect | Core | Contextual (first-run screens) | Contextual (public forms) | Contextual (landing docs) |
+| 18 | Parkinson's Law (time expectations) | Contextual (multi-step widget) | Contextual (long tasks) | Core | N/A |
+| 19 | Occam's Razor | Core | Core | Core | Core |
+| 20 | Pareto Principle | Core | Core | Contextual (optional fields) | Contextual (navigation) |
 
-## 5. Standard Output Template for Audits
+**Laws 2 and 8 never cover the same defect.** Law 2 grades the *size* of a target, and law 8 grades the *distance* to it. Cite an element under whichever one describes its problem, never under both.
 
-When generating a UX review, use this exact report format:
+## 4. Evidence rubric
+
+Option counts and similar numbers are **prompts to look closer, never grades by themselves**. Numeric thresholds appear only where an external source defines them.
+
+| # | Pass | Warning | Fail |
+| :-: | :--- | :--- | :--- |
+| 1 | Choices are organised for the task: grouped, ordered, or with a recommended default | A flat set of options with equal visual weight, and no default or grouping | Observed hesitation or errors, or the primary action can't be told apart from the alternatives |
+| 2 | Primary and frequent targets meet the touch goal (§6) on touch-first surfaces, and are comfortable with a pointer | A primary or frequent target is below the touch goal on a touch-first surface | Measured interaction failure: overlapping hit areas or mis-taps on a primary action |
+| 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked) |
+| 4 | Gaps between groups are clearly larger than gaps within groups. Labels sit nearest their own field | Spacing between groups and within groups is ambiguous in one region | Labels or controls read as belonging to the wrong item |
+| 5 | Nothing must be remembered across screens. Long values are chunked | The user must recall a short value across one step | The task needs a value from another screen with no way to view or copy it |
+| 6 | Feedback ≤ 0.1 s, and results ≤ 0.4 s or a progress or skeleton state (Doherty & Thadhani 1982, Card et al. 1991) | Results take 0.4–1 s with no feedback | Over 1 s with no feedback, or input frozen without indication |
+| 7 | One primary action or recommended item is distinct | Several elements compete with the same emphasis | The primary action is less prominent than a secondary one |
+| 8 | Controls sit near the task (inline, contextual, next to the last field) | The control needs a long but direct move | The control is placed so it's routinely missed or needs repeated long moves |
+| 9 | The key items are at the start or end of navigation and lists | A key item is buried mid-list | The primary destination is buried and observed to be missed |
+| 10 | Completion and error states are clear, with next steps | The end state is generic but not confusing | An abrupt or blank end, or an error with no way to recover |
+| 11 | Progress is visible in multi-step flows ("Step 2 of 4") | Progress is shown but inaccurate or vague | No progress shown in a long mandatory flow |
+| 12 | Clean alignment and predictable shapes *in the structure* | One region is visually ambiguous | The structure has to be decoded before it can be used |
+| 13 | Same function, same look. Different function, different look | One inconsistent control style | Non-interactive text styled like links or buttons, or the reverse |
+| 14 | Related items share a container or connector | A grouping relies on subtle whitespace only | A container wrongly groups unrelated items |
+| 15 | The system absorbs complexity (smart defaults, auto-detection) | The user does avoidable work once | Internal complexity is exposed and required (raw IDs, config syntax) |
+| 16 | Unambiguous variations are accepted and normalised (spaces in card numbers, phone formats) | Format rules are strict but stated up front | Valid input is rejected, or ambiguous input is silently guessed (e.g. `03/04/2026`) |
+| 17 | Polish supports trust and hierarchy | Polish is uneven between regions | Polish hides broken function |
+| 18 | Time and effort expectations are set ("~2 min", "3 steps") and defaults or autofill are used | No expectation is set in a long task | A simple task is spread over many screens with no indication of length |
+| 19 | No redundant elements, fields or confirmations | Some removable clutter | Redundancy causes errors or blocks the task |
+| 20 | Prime space goes to frequent actions (per usage data), and rare but critical actions stay findable | Rare actions take prime space | Frequent actions are hidden. **Without usage data, report Not assessed** |
+
+## 5. Declared visual styles
+
+If the project declares a visual style (for example one from the `ui-styles` skill, such as Scrapbook, Maximalism or Surrealism), **decoration that follows that style is not a violation**. Grade structure, not aesthetic: alignment of interactive elements, grouping, affordances and reading order. A tilted photo is decoration. A tilted form field is a structural defect.
+
+## 6. Target size and hit-area measurement
+
+### Usability (law 2) vs conformance (WCAG)
+- **Usability goal:** 44×44 (Apple HIG, WCAG 2.5.5 AAA) or 48×48 dp (Material) on touch-first surfaces. Missing the goal is a **Warning**, never a Fail on size alone.
+- **WCAG 2.2 AA (2.5.8) conformance note.** This is reported separately and doesn't change the score. A target under 24×24 CSS px is a *possible* 2.5.8 failure only after both of these checks:
+  - **Spacing test:** a 24px-diameter circle centred on the target's bounding box must intersect neither another target nor the circle of another undersized target.
+  - **Exceptions:** an inline target in text, an equivalent control elsewhere, a user-agent default control, or an essential presentation.
+
+  Record which check decided the outcome.
+
+### Measuring the real hit area
+1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. The effective target is the region where the result is the anchor or button, or one of its descendants. This handles stretched links, overlays and clipping automatically.
+2. **Static CSS only: estimate, and label it "static estimate".** For a stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**: the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
+   - Clipping: an ancestor with `overflow: hidden`, `clip-path` or `mask` cuts the area down.
+   - Overlays: a sibling with a higher `z-index` covers it.
+   - Inert areas: `pointer-events: none` on the pseudo-element.
+   - **Nested controls:** any other link or button inside a stretched-link card must be raised above the overlay (`position: relative; z-index: 2`), or it can't be clicked. That's a Fail under law 13 or law 3.
+   - **Link text:** the anchor's accessible name must describe the destination ("Learn more about Product X", or use `aria-labelledby`). A bare "Learn more" goes in the report as an accessibility note.
+
+## 7. The 20 laws (summary)
+
+Full detail, origins and caveats are in [`references/principles-breakdown.md`](references/principles-breakdown.md).
+
+1. **Hick's Law.** $T = a + b\log_2(n+1)$ for choices among known, equally likely options. Organise choices and offer a default. Scanning unfamiliar menus is closer to linear search.
+2. **Fitts's Law, target size.** Bigger targets are faster to acquire. Grades size only. Distance is law 8.
+3. **Jakob's Law.** Users expect your product to work like the ones they already use.
+4. **Law of Proximity.** Nearness implies relationship.
+5. **Miller's Law, memory load.** Working memory is small (Miller 1956's 7±2 for span; Cowan 2001 suggests about 4 chunks). Don't require recall, and chunk long values. This doesn't cap the number of visible menu items, because visible items are recognised, not recalled.
+6. **Doherty Threshold.** Feedback under 400 ms keeps users in flow.
+7. **Von Restorff Effect.** The item that stands out is noticed and remembered.
+8. **Minimize Target Distance.** The distance term of Fitts's Law: keep controls near the task.
+9. **Serial Position Effect.** First and last items are remembered best.
+10. **Peak-End Rule.** Experiences are judged by their peak and their end.
+11. **Zeigarnik Effect.** Supporting rationale for progress cues. The memory effect replicates inconsistently, and the grade rests on visibility of system status (Nielsen heuristic #1) and goal-gradient.
+12. **Law of Prägnanz.** People read structure in its simplest form.
+13. **Law of Similarity.** Shared appearance implies shared function.
+14. **Uniform Connectedness.** Connected elements are seen as related.
+15. **Tesler's Law.** Complexity is conserved: the system should absorb it.
+16. **Postel's Law.** Accept *unambiguous* variation and normalise it. Never silently guess ambiguous input.
+17. **Aesthetic-Usability Effect.** Attractive designs are perceived as easier to use.
+18. **Parkinson's Law, time expectations.** Set expectations and reduce effort. (The original law is an observation about work. Here it grades whether the time a task will take is communicated.)
+19. **Occam's Razor.** Prefer the simplest design that does the job.
+20. **Pareto Principle.** Most use concentrates on a few features. That needs usage evidence.
+
+## 8. Report template (use exactly)
 
 ```markdown
-# UX Law Audit: [Page / Component Name]
+# UX Law Audit: [Page / Component]
 
-- **Surface Type**: [Marketing & Landing | SaaS & Dashboard | Form & Wizard | Content & Docs]
-- **Overall UX Health Score**: **XX%** ([Pass Count] Pass, [Warning Count] Warning, [Fail Count] Fail, [N/A Count] N/A)
+- **Surface type**: [Marketing & Landing | SaaS & Dashboard | Form & Wizard | Content & Docs]
+- **Evidence sources**: [live page | source code | screenshot | analytics]
+- **UX Score**: **XX%** | *No score — insufficient evidence* ([P] Pass, [W] Warning, [F] Fail, [NA] N/A, [NS] Not assessed)
+- **Band**: [Strong | Good, with friction | Needs Work | Redesign recommended] [capped by blocking rule: yes/no]
+- **Scope note**: Usability heuristics only; not a WCAG/accessibility conformance result.
 
----
-
-### Score Breakdown
-
-| Law | Status | Points | Observation / Finding |
+### Score breakdown
+| Law | Status | Points | Observation / evidence |
 | :--- | :---: | :---: | :--- |
-| **1. Hick's Law** | Pass | 1.0 | Clear 3-tier pricing table with recommended tier highlighted. |
-| **2. Fitts's Law** | Pass | 1.0 | Card uses `.stretched-link` (`::after { inset: 0 }`); effective hit area is 320x240px. |
-| ... | ... | ... | ... |
-| **16. Postel's Law** | N/A | - | No user input fields on this static showcase section. |
+| 1. Hick's Law | Pass | 1.0 | Three pricing tiers, "Recommended" marked. |
+| 2. Fitts's Law | Pass | 1.0 | Card uses a stretched link; hit-tested area 320×240 (live). |
+| 16. Postel's Law | N/A | – | Contextual trigger absent: no input fields. |
+| 20. Pareto | Not assessed | – | Needs usage analytics for nav items. |
 
----
+### Key findings
+#### 1. [Law] – [Warning | Fail]
+- **Observed**: …
+- **Evidence / location**: [selector, screenshot ref, measurement]
+- **Remediation**: …
 
-### Key Violations & Recommended Fixes
+### Not assessed — evidence needed
+- [Law]: [what evidence would allow grading]
 
-#### 1. [Law Name] – [Severity: Warning | Fail]
-- **Observed Violation**: [Specific description of the UX issue]
-- **Evidence / Location**: [DOM selector, screenshot reference, or CSS file]
-- **Actionable Remediation**: [Code snippet, layout modification, or copy fix]
+### Conformance notes (not scored)
+- [e.g. WCAG 2.5.8 possible failure: 18×18 icon button, spacing test failed against adjacent link]
 ```
+
+A worked example is in [`examples/sample-audit.md`](examples/sample-audit.md).

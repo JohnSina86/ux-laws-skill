@@ -18,7 +18,9 @@ Generic AI UX critiques tend to fail in four ways. Here is how this skill handle
 
 The score is the mean over assessed laws. A blocking rule caps the band whenever a task-critical path fails.
 
-See [`SKILL.md`](SKILL.md) for the rubric, matrix and report template, [`references/principles-breakdown.md`](references/principles-breakdown.md) for origins and caveats, and [`examples/sample-audit.md`](examples/sample-audit.md) for a worked audit.
+See [`SKILL.md`](SKILL.md) for the rubric, matrix and report template, [`references/principles-breakdown.md`](references/principles-breakdown.md) for each law, [`references/provenance.md`](references/provenance.md) for sources and what was not confirmed, [`references/hit-testing.md`](references/hit-testing.md) for a read-only browser snippet that measures real hit areas, and [`examples/sample-audit.md`](examples/sample-audit.md) for a worked audit.
+
+**Evals.** [`evals/`](evals/) holds four functional tasks and twenty trigger queries (half are near-miss negatives), with inert fixtures and grader-only reference audits. The worked example is never used as an eval fixture, because it contains its own answer.
 
 ## The 20 laws
 
@@ -63,6 +65,12 @@ When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applica
 
 ## Changelog
 
+- **v1.2.0 (unreleased)**
+  - Read-only hit-testing snippet, and live-procedure wording that never submits a live form to confirm activation.
+  - Provenance table with a source reference for each origin and caveat. Unconfirmed citations are marked, and Ghibellini and Meier is corrected to 2025.
+  - Trigger and rubric fixes: unknown triggers are Not assessed, missing confirmation is a Peak-End Fail, Serial Position is Contextual on marketing surfaces, and the Doherty tiers are exhaustive.
+  - Audit-completeness checklist, a ui-styles interop table, `evals/` and `RELEASING.md`. The description names the neighbouring skills it should not replace.
+  - The trigger evals were reviewed by hand. They were **not** run through the automated tester.
 - **v1.1.0**
   - Evidence rubric and Not assessed status, with a corrected score formula and zero-denominator rule.
   - Blocking rule.

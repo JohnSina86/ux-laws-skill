@@ -63,6 +63,17 @@
         "Recommends an accessibility-focused review or tooling for conformance",
         "May offer a UX-laws usability audit as a separate, clearly labelled deliverable"
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Audit the UX of this profile form from its source only (no browser, no usage data).\n\n<form class=\"profile\"><h2>Profile</h2><label>Name <input name=\"n\"></label><label>Email <input name=\"e\"></label><button>Save</button><button>Cancel</button></form>",
+      "expected_output": "A source-code audit that names the untyped Cancel button as a law 3 finding, marks usage- and render-dependent laws Not assessed with the evidence needed, and does not call the form accessible or compliant.",
+      "files": [],
+      "expectations": [
+        "Flags the Cancel button, which has no explicit type and would submit the form, as a law 3 finding and says what to change (type=\"button\")",
+        "Names source code as the evidence and marks usage-based and rendering-dependent laws Not assessed with the evidence needed",
+        "Does not claim the form is accessible or WCAG-conformant"
+      ]
     }
   ]
 }

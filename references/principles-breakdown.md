@@ -1,12 +1,12 @@
 # Comprehensive Guide: 20 Laws of UX & Cognitive Psychology
 
-This reference breaks down the 20 essential UX laws, their cognitive origins, practical Do's and Don'ts, and implementation guidelines for automated auditors and product designers.
+This reference covers the 20 UX laws used by `SKILL.md`: their origins, caveats, and Do's and Don'ts. Applicability (Core or Contextual) is defined **only** in the `SKILL.md` §3 matrix, and the scope lines below repeat it. Grading evidence is in `SKILL.md` §4.
 
 ---
 
 ## Table of Contents
 1. [Hick's Law](#1-hicks-law)
-2. [Fitts's Law (with Stretched-Link Caveat)](#2-fittss-law)
+2. [Fitts's Law — target size (with stretched-link caveat)](#2-fittss-law)
 3. [Jakob's Law](#3-jakobs-law)
 4. [Law of Proximity](#4-law-of-proximity)
 5. [Miller's Law](#5-millers-law)
@@ -29,11 +29,12 @@ This reference breaks down the 20 essential UX laws, their cognitive origins, pr
 ---
 
 ### 1. Hick's Law
-> *Decision time increases logarithmically with the number and complexity of choices.*
+> *Choice reaction time increases logarithmically with the number of equally likely alternatives.*
 
-* **Origin**: William Edmund Hick and Ray Hyman (1952).
-* **Formula**: $T = b \cdot \log_2(n + 1)$
-* **Primary Scope**: Core for Marketing (landing choices, pricing plans) & Forms (wizards, category selectors).
+* **Origin**: William Edmund Hick (1952) and Ray Hyman (1953).
+* **Formula**: $T = a + b \cdot \log_2(n + 1)$
+* **Caveat**: The law holds for choices among known, equally likely options. When users scan an unfamiliar menu, search time grows closer to linearly, so organisation and familiarity matter more than the raw count. Never grade on option count alone.
+* **Scope**: Core for Marketing and Forms. Contextual for SaaS (menus, filters) and Content (navigation).
 * **Do**:
   - Break multi-step processes into sequential steps (wizards).
   - Use progressive disclosure to show advanced options only when requested.
@@ -46,9 +47,11 @@ This reference breaks down the 20 essential UX laws, their cognitive origins, pr
 ### 2. Fitts's Law
 > *The time to acquire a target is a function of the distance to the target and the width of the target.*
 
-* **Origin**: Paul Fitts (1954).
+* **Origin**: Paul Fitts (1954). The Shannon formulation $MT = a + b\log_2(D/W + 1)$ is the one used in ISO 9241-9.
 * **Formula**: $MT = a + b \cdot \log_2 \left( \frac{2D}{W} \right)$
-* **Primary Scope**: Core for SaaS dashboards & Forms; Contextual for Marketing CTAs.
+* **In this skill**: law 2 grades **W (size)** only. **D (distance)** is graded by law 8, so the same element is never cited under both.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (CTAs) and Content (navigation).
+* **Size goal vs conformance**: Fitts's Law sets no minimum size. The 44×44 goal comes from Apple's HIG and WCAG 2.5.5 (AAA), and 48×48 dp from Material. The AA requirement is WCAG 2.2 **2.5.8: 24×24 CSS px**, with a spacing alternative and exceptions (`SKILL.md` §6). Missing the 44 goal is a Warning on touch-first surfaces. A 2.5.8 result is a separate conformance note.
 
 #### ⚠️ Critical Auditor Heuristic: The Stretched-Link Pattern
 When inspecting HTML/CSS or executing automated accessibility sweeps, **do not evaluate touch targets solely by the bounding box of `<a>` or `<button>` tags**.
@@ -60,7 +63,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 <div class="card" style="position: relative; width: 320px; height: 220px;">
   <h3>Product Title</h3>
   <p>Description text...</p>
-  <a href="/details" class="card-link">Learn More</a>
+  <a href="/details" class="card-link">Learn more about Product Title</a>
 </div>
 ```
 ```css
@@ -72,11 +75,13 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
   z-index: 1;
 }
 ```
-* **Auditor Rule**: If an anchor has a pseudo-element (`::after` or `::before`) with `position: absolute` and `inset: 0`, trace up the DOM to the nearest ancestor with `position: relative` (or other positioned context). **The effective touch target $W$ is the dimensions of that container (e.g., $320 \times 220\text{px}$), NOT the inline text bounding box ($80 \times 16\text{px}$).**
+* **Auditor rule**: On a live page, measure the effective target by hit-testing points with `document.elementFromPoint`. With CSS only, the stretched pseudo-element covers its **containing block**. Start at the anchor that generates it, because a positioned anchor contains its own overlay. Otherwise it is the nearest positioned ancestor, or one that establishes a containing block another way. Examples are `transform`, `filter`, `backdrop-filter`, `perspective`, `contain` and `container-type`, and the list isn't exhaustive. Then subtract clipping (`overflow: hidden`, `clip-path`) and overlays (a higher `z-index`, `pointer-events: none`), and label the result "static estimate". **The effective target $W$ is that region (e.g. $320 \times 220\text{px}$), not the inline text box ($80 \times 16\text{px}$).**
+* **Nested controls**: any other link or button inside the card must sit above the overlay (`position: relative; z-index: 2`), or it can't be clicked. Grade that under Jakob's Law (law 3).
+* **Link text**: the stretched anchor's name must describe its destination (WCAG 2.4.4). Avoid a bare "Learn more".
 
 * **Do**:
-  - Ensure touch targets meet minimum accessible sizes ($\ge 44 \times 44\text{px}$ on mobile).
-  - Place primary actions in comfortable reach zones (bottom of mobile viewports, screen edges on desktop).
+  - Aim for 44×44 or 48×48 targets on touch-first surfaces, and never go below 24×24 without the 2.5.8 spacing exception.
+  - Make the whole card or row clickable when the whole card or row is the target.
 * **Don't**:
   - Flag accessible container cards as Fitts's violations just because the text inside is small.
 
@@ -86,7 +91,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Users spend most of their time on other websites, so they prefer your site to work like the ones they already know.*
 
 * **Origin**: Jakob Nielsen (2000).
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Use recognizable UI conventions (cart top-right, search in header, logo returns home).
   - Maintain established visual affordances (buttons look clickable, inputs look editable).
@@ -99,7 +104,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Objects that are near each other tend to be grouped together.*
 
 * **Origin**: Gestalt psychology (Max Wertheimer, 1923).
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Keep form field labels closer to their corresponding input than to neighboring inputs.
   - Employ a proportional spacing scale (e.g., 8pt grid) where outer section margins are $2\times$ to $3\times$ group margins.
@@ -109,13 +114,14 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ---
 
 ### 5. Miller's Law
-> *The average person can only keep 7 ± 2 items in their working memory.*
+> *Working memory holds only a few chunks at a time.*
 
-* **Origin**: George A. Miller (1956).
-* **Primary Scope**: Core for SaaS dashboards and multi-field forms; Contextual for marketing.
+* **Origin**: George A. Miller (1956), "7 ± 2" for immediate-recall span. Cowan (2001) estimates about 4 chunks.
+* **Caveat**: The law concerns **recall**. Visible menus and lists are *recognised*, so 7±2 is **not** a cap on navigation items. Don't grade nav length with it. That's Hick, and scanning cost.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (comparison tables) and Content (long procedures).
 * **Do**:
-  - Chunk complex values (credit cards, phone numbers, serial keys) into 3–4 character segments.
-  - Group long lists into distinct categories with max 5–7 items per section.
+  - Chunk long values (card numbers, phone numbers, keys) into 3–4 character groups.
+  - Keep the information needed for a decision visible where the decision is made.
 * **Don't**:
   - Require users to memorize values on screen A to type them on screen B.
 
@@ -125,7 +131,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Productivity soars when computer and users interact at a pace (< 400ms) that ensures neither waits on the other.*
 
 * **Origin**: Walter J. Doherty and Ahrin J. Thadhani (IBM, 1982).
-* **Primary Scope**: Core for SaaS & interactive forms; Contextual for marketing pages.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (interactive widgets) and Content (search).
+* **Related limits**: 0.1 s feels instant, 1 s keeps flow, and 10 s holds attention (Miller 1968; Card, Robertson & Mackinlay 1991; Nielsen).
 * **Do**:
   - Provide immediate feedback (< 100ms) on clicks (active states, ripple animations).
   - Use skeleton screens to render layout immediately while async data loads.
@@ -138,7 +145,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *When multiple similar objects are present, the one that differs from the rest is most likely to be remembered.*
 
 * **Origin**: Hedwig von Restorff (1933).
-* **Primary Scope**: Core for marketing & pricing grids; Contextual for dashboards.
+* **Scope**: Core for Marketing. Contextual elsewhere (primary action, callouts).
 * **Do**:
   - Give the primary recommended tier or conversion CTA distinctive elevation, border, or accent color.
 * **Don't**:
@@ -149,7 +156,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 8. Minimize Target Distance
 > *Reducing the distance a cursor or finger must travel speeds up interaction and reduces motor fatigue.*
 
-* **Primary Scope**: Core for SaaS and complex forms; N/A for static content.
+* **Origin**: The **D term of Fitts's Law**. It isn't an independent law. This skill grades distance here and size under law 2, and never the same defect under both.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (interactive widgets). N/A for Content.
 * **Do**:
   - Provide contextual actions (hover menus, right-click actions, inline edit buttons).
   - Place submission/confirmation controls close to the last entered field.
@@ -161,8 +169,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 9. Serial Position Effect
 > *Users best remember the first (primacy) and last (recency) items in a series.*
 
-* **Origin**: Hermann Ebbinghaus (1885).
-* **Primary Scope**: Core for marketing navbars and content indexes; N/A for simple forms.
+* **Origin**: Hermann Ebbinghaus (1885); free-recall curve by Murdock (1962).
+* **Scope**: Core for Content. Contextual for Marketing (navigation, ordered lists), SaaS (navigation) and Forms (step lists, long option lists).
 * **Do**:
   - Place the most critical navigation anchors (e.g., Home, Features at start; Sign Up / Pricing at end).
 * **Don't**:
@@ -173,8 +181,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 10. Peak-End Rule
 > *People judge an experience largely based on how they felt at its peak and at its end.*
 
-* **Origin**: Daniel Kahneman and Barbara Fredrickson (1993).
-* **Primary Scope**: Core for marketing funnels, checkout flows, and onboarding.
+* **Origin**: Fredrickson & Kahneman (1993); Kahneman et al. (1993).
+* **Scope**: Core for Forms. Contextual for Marketing (any **conversion flow**: form, sign-up or purchase. The end event is what happens after submit, and a missing or blank confirmation is a Fail, not N/A) and SaaS (completable tasks). N/A for Content.
 * **Do**:
   - Design memorable, positive confirmation states (e.g., celebration animations, clear receipt/next-steps).
   - Provide friendly, actionable recovery guidance on 404 or form failure states.
@@ -187,8 +195,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *People remember uncompleted or interrupted tasks better than completed tasks.*
 
 * **Origin**: Bluma Zeigarnik (1927).
-* **Primary Scope**: Core for multi-step onboarding and checkout forms.
-* **Auditor Note**: **N/A on marketing/landing pages** unless an interactive onboarding or multi-step quote tool is present.
+* **Caveat**: Replications of the memory advantage for unfinished tasks are inconsistent. Progress indicators are better justified by **visibility of system status** (Nielsen heuristic #1) and the **goal-gradient effect**. Treat Zeigarnik as supporting rationale, not the basis of the grade.
+* **Scope**: Core for Forms. Contextual for Marketing (multi-step widget) and SaaS (onboarding checklist). N/A for Content.
 * **Do**:
   - Show explicit progress bars (`"Profile 75% complete"`) and step indicators (`"Step 2 of 4"`).
 * **Don't**:
@@ -200,18 +208,18 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *The human eye interprets ambiguous or complex shapes in the simplest, most orderly form possible.*
 
 * **Origin**: Gestalt psychology.
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Use clean grids, standard rectangular cards, and predictable alignments.
 * **Don't**:
-  - Layer irregular, overlapping asymmetrical shapes that force the user to mentally decode the UI.
+  - Layer irregular, overlapping shapes **in the interactive structure**, so the user has to decode the UI. Decoration that follows a declared visual style (e.g. Scrapbook, Maximalism) is not a violation; see `SKILL.md` §5.
 
 ---
 
 ### 13. Law of Similarity
 > *Elements that share visual characteristics are perceived to have the same role or function.*
 
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Keep styling consistent across all interactive components (buttons, links, form fields).
 * **Don't**:
@@ -223,7 +231,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Visually connected elements are perceived as more related than elements with no explicit link.*
 
 * **Origin**: Irvin Rock and Stephen Palmer (1990).
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Group related form controls or metrics inside clear card containers, panels, or linked borders.
 * **Don't**:
@@ -235,8 +243,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Every system has an irreducible amount of complexity that must be handled either by the system or the user.*
 
 * **Origin**: Larry Tesler (mid-1980s).
-* **Primary Scope**: Core for SaaS, web apps, and complex form flows.
-* **Auditor Note**: **N/A on marketing pages** with no interactive application logic.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (interactive widget). N/A for Content.
 * **Do**:
   - Absorb complexity behind the scenes (auto-detect card issuer, auto-fill address from postal code).
 * **Don't**:
@@ -247,12 +254,11 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 16. Postel's Law (Robustness Principle)
 > *Be liberal in what you accept, and conservative in what you send.*
 
-* **Origin**: Jon Postel (RFC 760 / TCP specification).
-* **Primary Scope**: Core for forms and input fields.
-* **Auditor Note**: **N/A on static content/marketing pages** without input controls.
+* **Origin**: Jon Postel, the robustness principle in RFC 760 (IP, 1980) and RFC 761 (TCP). RFC 9413 (2023) documents its downsides for protocols: leniency hides errors.
+* **Scope**: Core for SaaS and Forms. Contextual for Marketing (input fields). N/A for Content.
 * **Do**:
-  - Accept phone numbers formatted with dashes, spaces, or parentheses and sanitize automatically.
-  - Parse dates flexibly (`2026-09-21`, `09/21/2026`, `21 Sept 2026`).
+  - Accept phone numbers with dashes, spaces or parentheses, and normalise them.
+  - Accept **unambiguous** date forms (`2026-09-21`, `21 Sept 2026`). For numeric dates such as `03/04/2026`, which can be read as MM/DD or DD/MM, use a date picker or a locale-explicit format, and echo the parsed date back. Never silently guess.
 * **Don't**:
   - Reject a form submission simply because a user included spaces in a credit card number.
 
@@ -262,7 +268,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Users perceive aesthetically pleasing designs as more usable and are more tolerant of minor defects.*
 
 * **Origin**: Masaaki Kurosu and Kaori Kashimura (1995).
-* **Primary Scope**: Core for marketing pages; Contextual for enterprise tooling.
+* **Scope**: Core for Marketing. Contextual elsewhere (first-run screens, public forms, landing docs).
 * **Do**:
   - Invest in typographic hierarchy, balanced color palettes, and micro-interactions.
 * **Don't**:
@@ -273,9 +279,9 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 18. Parkinson's Law
 > *Work expands to fill the time available for its completion.*
 
-* **Origin**: Cyril Northcote Parkinson (1955).
-* **Primary Scope**: Core for multi-step wizards, checkout funnels, and productivity apps.
-* **Auditor Note**: **N/A on marketing and informational landing pages**.
+* **Origin**: Cyril Northcote Parkinson (1955), an observation about bureaucratic work.
+* **In this skill**: it grades **time expectations**: whether the interface tells users how long a task will take and cuts effort with defaults and autofill. The remedies come from that goal, not from the original law.
+* **Scope**: Core for Forms. Contextual for Marketing (multi-step widget) and SaaS (long tasks). N/A for Content.
 * **Do**:
   - Provide autofill, browser credential autocomplete, and realistic completion time estimates (`"Takes ~2 minutes"`).
 * **Don't**:
@@ -287,7 +293,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Among competing designs that solve the problem equally well, the simplest one with the fewest assumptions is best.*
 
 * **Origin**: William of Ockham (14th century).
-* **Primary Scope**: Core across all site types.
+* **Scope**: Core across all site types.
 * **Do**:
   - Eliminate redundant form fields, unnecessary confirmation dialogs, and decorative clutter.
 * **Don't**:
@@ -298,10 +304,11 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 ### 20. Pareto Principle (80/20 Rule)
 > *Roughly 80% of user activity stems from 20% of features.*
 
-* **Origin**: Vilfredo Pareto (1896).
-* **Primary Scope**: Core for SaaS dashboards and primary navigation.
+* **Origin**: Vilfredo Pareto (1896); applied to software usage by Juran.
+* **Evidence**: Frequency has to come from usage data or research. Without it, report **Not assessed**. Don't guess which features are popular.
+* **Scope**: Core for Marketing and SaaS. Contextual for Forms (optional fields) and Content (navigation).
 * **Do**:
-  - Reserve prominent screen real estate for the top 20% most-used actions.
+  - Give prominent space primarily to the most-used actions, and keep rare but critical actions (recovery, safety, legal) findable.
   - Move edge-case or administrative tools into secondary settings menus.
 * **Don't**:
   - Give equal visual emphasis to a feature used daily and a feature used once a year.

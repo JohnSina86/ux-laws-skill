@@ -1,117 +1,80 @@
 # UX Laws AI Skill (`ux-laws`)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Skill: Antigravity](https://img.shields.io/badge/Skill-Antigravity%20%2F%20Agents-purple.svg)](SKILL.md)
+[![Skill: Agents](https://img.shields.io/badge/Skill-Claude%20Code%20%2F%20Antigravity-purple.svg)](SKILL.md)
 
-An agentic AI skill and review framework based on **20 core UX laws and cognitive psychology principles**. 
+An agent skill and review framework built on **20 UX laws and cognitive-psychology principles**. It's designed for AI coding assistants (Claude Code, Google Antigravity, Cursor, Copilot), so their UX audits are **more consistent and evidence-backed**.
 
-Engineered specifically for AI coding assistants (Google Antigravity, Claude Code, Cursor, Copilot Workspace) to perform **reproducible, false-positive-free UX audits** and guide interface implementations.
+> **Scope:** usability heuristics only. A UX score from this skill is not an accessibility or WCAG conformance result, so pair it with an accessibility review.
 
----
+## What makes it different
 
-## What Makes This Skill Different
+Generic AI UX critiques tend to fail in four ways. Here is how this skill handles each one:
 
-Generic AI UX critiques suffer from three common failure modes:
-1. **Uncalibrated scoring**: Without a fixed scoring rubric and N/A rules, ratings vary widely between runs and between auditors.
-2. **False-positive target measurements**: Measuring naive `<a>` bounding boxes flags accessible stretched-link card patterns (`::after { inset: 0 }`) as Fitts's Law violations.
-3. **Over-application on marketing sites**: Flatly grading form- and app-centric laws (Postel, Tesler, Parkinson, Zeigarnik) on static landing pages produces nonsensical penalties.
+1. **Uncalibrated grades.** Every Pass, Warning and Fail must cite the observable evidence listed in a per-law rubric. Option counts and similar numbers prompt a closer look but never decide a grade.
+2. **Guessing.** When the evidence isn't available (timing on a screenshot, usage data for Pareto), the law is reported as **Not assessed** and the needed evidence is listed. It's excluded from the score, and an audit with no assessable laws reports *no score* instead of 0%.
+3. **Misapplied laws.** An applicability matrix marks each law Core, Contextual (scored only when a named trigger is present) or N/A for four surface types. Declared visual styles are graded on structure, not aesthetic.
+4. **False hit-area results.** Live hit-testing (`elementFromPoint`) is preferred. Static measurement accounts for stretched links, containing blocks, clipping, overlays and nested controls. Fitts's usability goal is kept separate from WCAG 2.2 2.5.8 conformance.
 
-This skill solves all three with built-in auditor guardrails:
+The score is the mean over assessed laws. A blocking rule caps the band whenever a task-critical path fails.
 
-* 🎯 **Reproducible Scoring Scale & N/A Rule**: Standardized 3-tier scoring (`Pass: 1.0`, `Warning: 0.5`, `Fail: 0.0`) with `N/A` strictly excluded from the score denominator.
-* 🔍 **Stretched-Link & Hit-Area Heuristic**: Explicit instructions to inspect CSS pseudo-elements (`::after { inset: 0 }`), container click delegation, and positioned ancestors before measuring Fitts's Law touch targets.
-* 🧭 **Site-Type Applicability Matrix**: Filters the 20 laws by surface type (*Marketing & Landing*, *SaaS & Dashboard*, *Forms & Wizards*, *Content & Docs*) so agents only evaluate relevant principles.
+See [`SKILL.md`](SKILL.md) for the rubric, matrix and report template, [`references/principles-breakdown.md`](references/principles-breakdown.md) for origins and caveats, and [`examples/sample-audit.md`](examples/sample-audit.md) for a worked audit.
 
----
+## The 20 laws
 
-## 20 Laws of UX at a Glance
+Hick · Fitts (target size) · Jakob · Proximity · Miller (memory load) · Doherty · Von Restorff · Minimize Target Distance · Serial Position · Peak-End · Zeigarnik · Prägnanz · Similarity · Uniform Connectedness · Tesler · Postel · Aesthetic-Usability · Parkinson (time expectations) · Occam's Razor · Pareto
 
-| # | Principle | Key Takeaway | Typical Scope |
-|---|-----------|--------------|---------------|
-| 1 | **Hick’s Law** | Simplify choices; decision time increases logarithmically with options. | Marketing, Forms |
-| 2 | **Fitts’s Law** | Make touch targets large ($\ge 44\text{px}$) and close. *Account for stretched links!* | Apps, Forms, CTAs |
-| 3 | **Jakob’s Law** | Follow familiar design patterns users know from other apps. | Universal |
-| 4 | **Law of Proximity** | Group related elements close together with deliberate whitespace. | Universal |
-| 5 | **Miller’s Law** | Chunk information into 7 ± 2 manageable pieces. | Dashboards, Forms |
-| 6 | **Doherty Threshold** | Keep interactions responsive (< 400ms) to maintain user flow. | SaaS, Interactive |
-| 7 | **Von Restorff Effect** | Make primary actions or recommended tiers stand out visually. | Marketing, Pricing |
-| 8 | **Minimize Target Distance** | Bring actions near the user's focus (context menus, inline controls). | SaaS, Complex Forms |
-| 9 | **Serial Position Effect** | Place critical items at the start and end of lists and navbars. | Navbars, Lists |
-| 10 | **Peak-End Rule** | Delight users at key milestones and ensure graceful exits/error handling. | Funnels, Onboarding |
-| 11 | **Zeigarnik Effect** | Use progress bars and checklists to encourage task completion. | Multi-step Wizards |
-| 12 | **Law of Prägnanz** | Prefer clean, simple geometrical structures over visual chaos. | Universal |
-| 13 | **Law of Similarity** | Elements with identical visual styling must share the same behavior. | Universal |
-| 14 | **Uniform Connectedness** | Group related controls using cards, containers, or borders. | Universal |
-| 15 | **Tesler’s Law** | Absorb complexity with smart backend defaults rather than burdening users. | SaaS, Complex Forms |
-| 16 | **Postel’s Law** | Be liberal in what you accept (forgiving input) and conservative in output. | Forms, Inputs |
-| 17 | **Aesthetic-Usability Effect** | Polished, attractive visual designs increase perceived usability. | Marketing, Branding |
-| 18 | **Parkinson’s Law** | Provide autofill and sensible defaults to prevent task procrastination. | Forms, Checkouts |
-| 19 | **Occam’s Razor** | Choose the simplest design solution with the fewest moving parts. | Universal |
-| 20 | **Pareto Principle** | Optimize screen space for the 20% of features used 80% of the time. | Dashboards, Toolbars |
+## Installation
 
-*For in-depth breakdowns, formulas, and Do's/Don'ts, see [`references/principles-breakdown.md`](references/principles-breakdown.md).*
+Install a tagged release, so you get the reviewed version.
 
----
+> **Release status: pending.** The `v1.1.0` tag doesn't exist yet, so the commands below will fail until it's published. **Don't** install from the default branch instead: it still holds v1.0.0, without these fixes. Once the tag is published, the commands work as written, and `git -C <install dir> describe --tags` should print `v1.1.0`.
 
-## Site-Type Applicability Matrix
-
-| Principle | Marketing & Landing | SaaS & Dashboards | Forms & Wizards | Content & Docs |
-| :--- | :---: | :---: | :---: | :---: |
-| **Hick's Law** | **Core** | Contextual | **Core** | Contextual |
-| **Fitts's Law** | Contextual (CTAs) | **Core** | **Core** | Contextual (Nav) |
-| **Jakob's Law** | **Core** | **Core** | **Core** | **Core** |
-| **Law of Proximity** | **Core** | **Core** | **Core** | **Core** |
-| **Miller's Law** | Contextual | **Core** | **Core** | Contextual |
-| **Doherty Threshold** | Contextual | **Core** | **Core** | Contextual |
-| **Von Restorff Effect** | **Core** | Contextual | Contextual | Contextual |
-| **Minimize Target Distance** | Contextual | **Core** | **Core** | N/A |
-| **Serial Position Effect** | **Core** | Contextual | N/A | **Core** |
-| **Peak-End Rule** | **Core** | Contextual | **Core** | N/A |
-| **Zeigarnik Effect** | N/A* | Contextual | **Core** | N/A |
-| **Law of Prägnanz** | **Core** | **Core** | **Core** | **Core** |
-| **Law of Similarity** | **Core** | **Core** | **Core** | **Core** |
-| **Uniform Connectedness** | **Core** | **Core** | **Core** | **Core** |
-| **Tesler's Law** | N/A* | **Core** | **Core** | N/A |
-| **Postel's Law** | N/A* | **Core** | **Core** | N/A |
-| **Aesthetic-Usability Effect** | **Core** | Contextual | Contextual | Contextual |
-| **Parkinson's Law** | N/A* | Contextual | **Core** | N/A |
-| **Occam's Razor** | **Core** | **Core** | **Core** | **Core** |
-| **Pareto Principle** | **Core** | **Core** | Contextual | Contextual |
-
-*\*Evaluated on marketing pages only if an interactive widget (e.g., pricing calculator, multi-step lead form) is explicitly present.*
-
----
-
-## Installation & Setup
-
-### 1. In Google Antigravity
-
-#### Workspace / Project Level
-Clone into your project's `.agents/skills/` directory:
+### Claude Code
 ```bash
-# In your project root:
-mkdir -p .agents/skills
-git clone https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws
+mkdir -p ~/.claude/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
+```
+```powershell
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
+```
+For project level, run this from the project root:
+```bash
+mkdir -p .claude/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
+```
+```powershell
+New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
+```
+The folder name must be `ux-laws`. Claude Code loads the skill on demand from its description.
+
+### Google Antigravity
+```bash
+mkdir -p .agents/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws          # project
+mkdir -p ~/.gemini/config/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws   # global
 ```
 
-#### Global Level (Machine-Wide)
-Make this skill available across all local projects:
-```bash
-# Windows PowerShell
-git clone https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.gemini\config\skills\ux-laws"
-
-# macOS / Linux
-git clone https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws
-```
-
-### 2. In Other Agentic AI Assistants (Claude Code, Cursor, Copilot)
-Reference [`SKILL.md`](SKILL.md) in your project instructions, system prompts, or `.cursorrules`:
+### Cursor, Copilot and other tools without native skills
 ```markdown
-Refer to the UX Laws Skill in .agents/skills/ux-laws/SKILL.md whenever designing or reviewing UI components.
+When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applicability matrix, report template).
 ```
 
----
+## Companion skill
+
+[ui-styles](https://github.com/JohnSina86/ui-styles-skill) provides 22 visual styles with verified tokens. When it's used, ux-laws grades the structure of the result, not the chosen aesthetic.
+
+## Changelog
+
+- **v1.1.0**
+  - Evidence rubric and Not assessed status, with a corrected score formula and zero-denominator rule.
+  - Blocking rule.
+  - Contextual defined.
+  - Fitts split into size (law 2) and distance (law 8), and separated from WCAG 2.5.8.
+  - Live hit-testing and a complete stretched-link procedure.
+  - Science corrections (Hick intercept, Miller recall vs recognition, Postel ambiguous dates, Zeigarnik and Parkinson reframed, Pareto evidence).
+  - Declared-style rule.
+  - Matrix and reference synced.
+  - Claude Code install instructions.
+- **v1.0.0**: Initial release.
 
 ## License
 
-MIT License © 2026 [JohnSina86](https://github.com/JohnSina86). See [LICENSE](LICENSE) for details.
+MIT License © 2026 [JohnSina86](https://github.com/JohnSina86). See [LICENSE](LICENSE).

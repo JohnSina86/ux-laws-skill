@@ -1,19 +1,16 @@
 ---
 name: ux-laws
 description: >-
-  Audit and critique the UX of a page, flow or component against 20 UX laws
-  (Hick, Fitts, Jakob, Gestalt, Doherty, Peak-End and more), with an
-  evidence-based rubric, applicability matrix, "Not assessed" handling and
-  hit-area measurement rules. Use when asked to review, audit, score or critique
-  UX or interaction design. Not a WCAG/accessibility audit or a visual-style
-  critique; pair it with an accessibility review for conformance.
+  Evidence-based UX audits of a page, flow or component against the laws of UX (Hick, Fitts, Jakob, Gestalt, Doherty, Peak-End), with a scored rubric, Not assessed handling and hit-area measurement rules. Use when asked to review, audit, score or critique UX or interaction design. Not a WCAG audit (use an accessibility review), a visual-style critique (see ui-styles) or performance profiling.
+metadata:
+  version: "1.2.0"
 ---
 
-# UX & Interaction Design Laws Skill (v1.1)
+# UX & Interaction Design Laws Skill (v1.2)
 
 A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX and HCI. Every grade must cite observable evidence. If the evidence isn't available, the law is reported as *Not assessed* instead of guessed.
 
-**Scope.** This skill grades usability heuristics. It does **not** certify accessibility: contrast, keyboard access, screen-reader semantics and WCAG conformance are out of scope, apart from the target-size note in §6. A high score doesn't mean a page is production-ready. State this in every report.
+**Scope.** This skill grades usability heuristics. It does **not** certify accessibility: contrast, keyboard access, screen-reader semantics and WCAG conformance are out of scope, apart from the target-size note in §6. A high score doesn't mean a page is production-ready. State this in every report. For WCAG and Lighthouse audits, a companion such as [web-quality-skills](https://github.com/addyosmani/web-quality-skills) covers what this skill doesn't.
 
 ---
 
@@ -93,7 +90,7 @@ Option counts and similar numbers are **prompts to look closer, never grades by 
 | # | Pass | Warning | Fail |
 | :-: | :--- | :--- | :--- |
 | 1 | Choices are organised for the task: grouped, ordered, or with a recommended default | A flat set of options with equal visual weight, and no default or grouping | Observed hesitation or errors, or the primary action can't be told apart from the alternatives |
-| 2 | Primary and frequent targets meet the touch goal (§6) on touch-first surfaces, and are comfortable with a pointer | A primary or frequent target is below the touch goal on a touch-first surface | Measured interaction failure: overlapping hit areas or mis-taps on a primary action |
+| 2 | Primary and frequent targets meet the touch goal (§6) on touch-first surfaces, and are comfortable with a pointer | A primary or frequent target, **or any target within 8px of another target**, is below the touch goal on a touch-first surface | Measured interaction failure: overlapping hit areas or mis-taps on a primary action |
 | 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked) |
 | 4 | Gaps between groups are clearly larger than gaps within groups. Labels sit nearest their own field | Spacing between groups and within groups is ambiguous in one region | Labels or controls read as belonging to the wrong item |
 | 5 | Nothing must be remembered across screens. Long values are chunked | The user must recall a short value across one step | The task needs a value from another screen with no way to view or copy it |
@@ -128,7 +125,7 @@ If the project declares a visual style (for example one from the `ui-styles` ski
   Record which check decided the outcome.
 
 ### Measuring the real hit area
-1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. A point belongs to the target if the hit element is the anchor or button, or one of its descendants, **or** a container whose own or delegated handler activates the same action. Inspect `onclick`, framework handlers (e.g. via DevTools event listeners) and `cursor: pointer`, and confirm by activating a sample point. This handles stretched links, overlays, clipping and whole-card handlers. If a whole-card handler has no semantic link or button, report it as an accessibility note.
+1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. A point belongs to the target if the hit element is the anchor or button, or one of its descendants, **or** a container whose own or delegated handler activates the same action. Look for an inline `onclick`, `cursor: pointer`, and framework handlers in the DevTools Event Listeners panel. Page JavaScript can't see handlers added with `addEventListener`, so report such an area as **unknown, confirm manually**. Confirm only with a safe manual click on a non-destructive page, **never by submitting a live form**. A non-mutating snippet is in [`references/hit-testing.md`](references/hit-testing.md). This handles stretched links, overlays, clipping and whole-card handlers. If a whole-card handler has no semantic link or button, report it as an accessibility note.
 2. **Static CSS only: estimate, and label it "static estimate".** First confirm the pseudo-element is **actually generated and hit-testable**: `content` isn't `none` or `normal`, `display` isn't `none`, `visibility` is visible, and `pointer-events` isn't `none`. On a page, read `getComputedStyle(anchor, '::after')`. If any of these fails or can't be determined, measure the anchor's own box or mark the estimate uncertain. For a generated stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**. Start the search **at the anchor that generates the pseudo-element**: if the anchor itself is positioned, the overlay covers only the anchor. Otherwise walk outward to the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
    - Clipping: an ancestor with `overflow: hidden`, `clip-path` or `mask` cuts the area down.
    - Overlays: a sibling with a higher `z-index` covers it.
@@ -195,4 +192,28 @@ The score breakdown **must contain one row for each of the 20 laws**, including 
 - [e.g. WCAG 2.5.8 possible failure: 18×18 icon button, spacing test failed against adjacent link]
 ```
 
-A worked example is in [`examples/sample-audit.md`](examples/sample-audit.md).
+### Audit-completeness checklist (check before sending)
+- [ ] One row for each of the 20 laws (including N/A and Not assessed), evidence sources listed, and every Pass/Warning/Fail citing observable evidence.
+- [ ] Every N/A cites the matrix's unconditional exclusion or the evidence that a Contextual trigger is absent; every Not assessed names the evidence needed.
+- [ ] Score and counts recomputed from the rows (denominator = Pass + Warning + Fail), and the band assigned from the unrounded score.
+- [ ] Blocking rule checked, and the scope note and conformance notes included.
+
+A worked example is in [`examples/sample-audit.md`](examples/sample-audit.md). Never use it as a source of answers for a new audit.
+
+## 9. Working with `ui-styles`
+Grade structure, not aesthetic (section 5). The `ui-styles` index cites these laws against each style's risk. Use them as places to look, not as automatic findings. The two lists must agree, which `RELEASING.md` checks in both directions.
+
+| Law to look at | ui-styles IDs |
+| :--- | :--- |
+| 1 Hick | `maximalism` |
+| 3 Jakob (affordances, icon-only controls, focus visibility) | `cybercore`, `cyberpunk`, `minimalism`, `neumorphism`, `surrealism` |
+| 4 Proximity (grouping when shadows are heavy) | `claymorphism` |
+| 12 Prägnanz (rotated, overlapping or busy interactive items) | `glassmorphism`, `maximalism`, `scrapbook`, `surrealism` |
+| 13 Similarity (raised vs pressed states) | `neumorphism` |
+| 14 Uniform Connectedness (grouping) | `claymorphism` |
+| 17 Aesthetic-Usability (polish masking function) | `glassmorphism`, `neo-brutalism`, `sketch` |
+
+## References
+- [`references/principles-breakdown.md`](references/principles-breakdown.md): each law's definition, scope and Do and Don't.
+- [`references/hit-testing.md`](references/hit-testing.md): the live hit-area snippet.
+- [`references/provenance.md`](references/provenance.md): sources, caveats and what was not confirmed.

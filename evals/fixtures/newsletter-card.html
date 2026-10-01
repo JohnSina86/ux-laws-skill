@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture: newsletter card</title>
+<!-- Inert fixture: static markup, no script. Used by evals/evals.json. -->
+<section class="promo" style="position: relative; max-width: 340px; padding: 24px; border: 1px solid #ccc; border-radius: 12px">
+  <h2>Weekly design notes</h2>
+  <p>One email every Friday. Unsubscribe any time.</p>
+  <form action="/subscribe" method="post">
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required>
+    <button type="submit" style="height: 36px">Subscribe</button>
+  </form>
+  <a href="/archive" class="archive-link">Learn more</a>
+</section>
+<style>.archive-link::after { content: ""; position: absolute; inset: 0; }</style>

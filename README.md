@@ -30,28 +30,28 @@ Hick · Fitts (target size) · Jakob · Proximity · Miller (memory load) · Doh
 
 Install a tagged release, so you get the reviewed version.
 
-> **Current release: `v1.2.0`.** To confirm an install, run `git -C <install dir> describe --tags`, which should print `v1.2.0`.
+> **Current release: `v1.2.1`.** To confirm an install, run `git -C <install dir> describe --tags`, which should print `v1.2.1`.
 
 ### Claude Code
 ```bash
-mkdir -p ~/.claude/skills && git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
+mkdir -p ~/.claude/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
 ```
 ```powershell
-New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
 ```
 For project level, run this from the project root:
 ```bash
-mkdir -p .claude/skills && git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
+mkdir -p .claude/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
 ```
 ```powershell
-New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
+New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
 ```
 The folder name must be `ux-laws`. Claude Code loads the skill on demand from its description.
 
 ### Google Antigravity
 ```bash
-mkdir -p .agents/skills && git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws          # project
-mkdir -p ~/.gemini/config/skills && git clone --branch v1.2.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws   # global
+mkdir -p .agents/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws          # project
+mkdir -p ~/.gemini/config/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws   # global
 ```
 
 ### Cursor, Copilot and other tools without native skills
@@ -65,7 +65,7 @@ When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applica
 
 ## Changelog
 
-- **v1.2.1 (unreleased)**
+- **v1.2.1**
   - Law 3 now covers buttons with no explicit `type` inside a form: a Warning in general, a Fail when a Cancel, Close or Back button would submit the form. Found by a blind comparison of two design skill sets, where both left such buttons untyped.
 - **v1.2.0**
   - Read-only hit-testing snippet, and live-procedure wording that never submits a live form to confirm activation.

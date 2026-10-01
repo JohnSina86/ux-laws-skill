@@ -58,7 +58,7 @@ $$\text{UX Score} = \frac{\sum \text{points}}{\text{Pass} + \text{Warning} + \te
 
 Classify the surface first.
 - **Core:** always scored.
-- **Contextual:** scored only if the named trigger element is present. Name the trigger in the Observation column. If the trigger is absent, the law is N/A.
+- **Contextual:** scored only if the named trigger element is present. Name the trigger in the Observation column. Mark it **N/A only when the evidence shows the trigger is absent** from the audited scope (for example, the full page source has no form). If the evidence can't show whether the trigger exists (a cropped screenshot, or one view of a long page), mark it **Not assessed** and name the missing view.
 - **N/A:** not scored.
 
 | # | Law | Marketing & Landing | SaaS & Dashboards | Forms & Wizards | Content & Docs |
@@ -84,11 +84,11 @@ Classify the surface first.
 | 19 | Occam's Razor | Core | Core | Core | Core |
 | 20 | Pareto Principle | Core | Core | Contextual (optional fields) | Contextual (navigation) |
 
-**Laws 2 and 8 never cover the same defect.** Law 2 grades the *size* of a target, and law 8 grades the *distance* to it. Cite an element under whichever one describes its problem, never under both.
+**Laws 2 and 8 never grade the same defect twice.** Law 2 grades the *size* of a target, and law 8 the *distance* to it. One element may appear under both only when there is separate evidence for each, such as a 20×20 Save button that is also far from its field. Never record one problem under both laws.
 
 ## 4. Evidence rubric
 
-Option counts and similar numbers are **prompts to look closer, never grades by themselves**. Numeric thresholds appear only where an external source defines them.
+Option counts and similar numbers are **prompts to look closer, never grades by themselves**. Numeric thresholds appear only where an external source defines them. **Precedence:** if any Fail condition holds, grade Fail. Otherwise, if any Warning condition holds, grade Warning. Otherwise grade Pass when its evidence is observed. The law 6 timings (Doherty & Thadhani 1982; Card et al. 1991) are covered this way for every combination of acknowledgement and result time.
 
 | # | Pass | Warning | Fail |
 | :-: | :--- | :--- | :--- |
@@ -97,7 +97,7 @@ Option counts and similar numbers are **prompts to look closer, never grades by 
 | 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked) |
 | 4 | Gaps between groups are clearly larger than gaps within groups. Labels sit nearest their own field | Spacing between groups and within groups is ambiguous in one region | Labels or controls read as belonging to the wrong item |
 | 5 | Nothing must be remembered across screens. Long values are chunked | The user must recall a short value across one step | The task needs a value from another screen with no way to view or copy it |
-| 6 | Feedback ≤ 0.1 s, and a usable result ≤ 0.4 s; or for longer work, meaningful progress shown and the result in ≤ 10 s (Doherty & Thadhani 1982; Card et al. 1991) | Result in 0.4–1 s with no feedback, or 1–10 s with only an indeterminate spinner or skeleton | Over 1 s with no feedback, input frozen without indication, or over 10 s without determinate progress. A skeleton alone never earns a Pass for a long wait |
+| 6 | Acknowledgement ≤ 0.1 s, **and** one of: result ≤ 0.4 s; a progress or skeleton state until a result ≤ 10 s; or determinate progress (with cancel where possible) for longer work | Acknowledgement in 0.1–1 s; **or** result in 0.4–1 s with no progress state | No acknowledgement within 1 s; **or** result over 1 s with no progress state; **or** result over 10 s without determinate progress |
 | 7 | One primary action or recommended item is distinct | Several elements compete with the same emphasis | The primary action is less prominent than a secondary one |
 | 8 | Controls sit near the task (inline, contextual, next to the last field) | The control needs a long but direct move | The control is placed so it's routinely missed or needs repeated long moves |
 | 9 | The key items are at the start or end of navigation and lists | A key item is buried mid-list | The primary destination is buried and observed to be missed |
@@ -128,8 +128,8 @@ If the project declares a visual style (for example one from the `ui-styles` ski
   Record which check decided the outcome.
 
 ### Measuring the real hit area
-1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. The effective target is the region where the result is the anchor or button, or one of its descendants. This handles stretched links, overlays and clipping automatically.
-2. **Static CSS only: estimate, and label it "static estimate".** For a stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**. Start the search **at the anchor that generates the pseudo-element**: if the anchor itself is positioned, the overlay covers only the anchor. Otherwise walk outward to the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
+1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. A point belongs to the target if the hit element is the anchor or button, or one of its descendants, **or** a container whose own or delegated handler activates the same action. Inspect `onclick`, framework handlers (e.g. via DevTools event listeners) and `cursor: pointer`, and confirm by activating a sample point. This handles stretched links, overlays, clipping and whole-card handlers. If a whole-card handler has no semantic link or button, report it as an accessibility note.
+2. **Static CSS only: estimate, and label it "static estimate".** First confirm the pseudo-element is **actually generated and hit-testable**: `content` isn't `none` or `normal`, `display` isn't `none`, `visibility` is visible, and `pointer-events` isn't `none`. On a page, read `getComputedStyle(anchor, '::after')`. If any of these fails or can't be determined, measure the anchor's own box or mark the estimate uncertain. For a generated stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**. Start the search **at the anchor that generates the pseudo-element**: if the anchor itself is positioned, the overlay covers only the anchor. Otherwise walk outward to the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
    - Clipping: an ancestor with `overflow: hidden`, `clip-path` or `mask` cuts the area down.
    - Overlays: a sibling with a higher `z-index` covers it.
    - Inert areas: `pointer-events: none` on the pseudo-element.
@@ -161,7 +161,9 @@ Full detail, origins and caveats are in [`references/principles-breakdown.md`](r
 19. **Occam's Razor.** Prefer the simplest design that does the job.
 20. **Pareto Principle.** Most use concentrates on a few features. That needs usage evidence.
 
-## 8. Report template (use exactly)
+## 8. Report template (use this structure)
+
+The score breakdown **must contain one row for each of the 20 laws**, including N/A and Not assessed, so the counts and the score can be checked against the rows. The four rows below are illustrative only.
 
 ```markdown
 # UX Law Audit: [Page / Component]

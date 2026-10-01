@@ -75,8 +75,8 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
   z-index: 1;
 }
 ```
-* **Auditor rule**: On a live page, measure the effective target by hit-testing points with `document.elementFromPoint`. With CSS only, the stretched pseudo-element covers its **containing block**: the nearest positioned ancestor, or one that establishes a containing block another way. Examples are `transform`, `filter`, `backdrop-filter`, `perspective`, `contain` and `container-type`, and the list isn't exhaustive. Then subtract clipping (`overflow: hidden`, `clip-path`) and overlays (a higher `z-index`, `pointer-events: none`), and label the result "static estimate". **The effective target $W$ is that region (e.g. $320 \times 220\text{px}$), not the inline text box ($80 \times 16\text{px}$).**
-* **Nested controls**: any other link or button inside the card must sit above the overlay (`position: relative; z-index: 2`), or it can't be clicked.
+* **Auditor rule**: On a live page, measure the effective target by hit-testing points with `document.elementFromPoint`. With CSS only, the stretched pseudo-element covers its **containing block**. Start at the anchor that generates it, because a positioned anchor contains its own overlay. Otherwise it is the nearest positioned ancestor, or one that establishes a containing block another way. Examples are `transform`, `filter`, `backdrop-filter`, `perspective`, `contain` and `container-type`, and the list isn't exhaustive. Then subtract clipping (`overflow: hidden`, `clip-path`) and overlays (a higher `z-index`, `pointer-events: none`), and label the result "static estimate". **The effective target $W$ is that region (e.g. $320 \times 220\text{px}$), not the inline text box ($80 \times 16\text{px}$).**
+* **Nested controls**: any other link or button inside the card must sit above the overlay (`position: relative; z-index: 2`), or it can't be clicked. Grade that under Jakob's Law (law 3).
 * **Link text**: the stretched anchor's name must describe its destination (WCAG 2.4.4). Avoid a bare "Learn more".
 
 * **Do**:
@@ -170,7 +170,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *Users best remember the first (primacy) and last (recency) items in a series.*
 
 * **Origin**: Hermann Ebbinghaus (1885); free-recall curve by Murdock (1962).
-* **Scope**: Core for Marketing and Content. Contextual for SaaS (navigation) and Forms (step lists, long option lists).
+* **Scope**: Core for Content. Contextual for Marketing (navigation, ordered lists), SaaS (navigation) and Forms (step lists, long option lists).
 * **Do**:
   - Place the most critical navigation anchors (e.g., Home, Features at start; Sign Up / Pricing at end).
 * **Don't**:
@@ -182,7 +182,7 @@ Modern web patterns frequently stretch the interactive hit area of a small text 
 > *People judge an experience largely based on how they felt at its peak and at its end.*
 
 * **Origin**: Fredrickson & Kahneman (1993); Kahneman et al. (1993).
-* **Scope**: Core for Forms. Contextual for Marketing (the end event is the **conversion or form-submit confirmation**; with none, N/A) and SaaS (task completion). N/A for Content.
+* **Scope**: Core for Forms. Contextual for Marketing (any **conversion flow**: form, sign-up or purchase. The end event is what happens after submit, and a missing or blank confirmation is a Fail, not N/A) and SaaS (completable tasks). N/A for Content.
 * **Do**:
   - Design memorable, positive confirmation states (e.g., celebration animations, clear receipt/next-steps).
   - Provide friendly, actionable recovery guidance on 404 or form failure states.

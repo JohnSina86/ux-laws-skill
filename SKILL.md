@@ -48,7 +48,11 @@ $$\text{UX Score} = \frac{\sum \text{points}}{\text{Pass} + \text{Warning} + \te
 
 **Blocking rule.** A Fail on a task-critical path (the primary conversion, checkout, sign-up or the main job of the screen) caps the band at **Needs Work**, whatever the percentage.
 
-**Bands (heuristic guidance, not certification):** 90–100% Strong · 75–89% Good, with friction · 60–74% Needs Work · below 60% Redesign recommended.
+**Bands (heuristic guidance, not certification).** Assign the band from the **unrounded** score, then display the score rounded to a whole percent:
+- score ≥ 90%: Strong
+- 75% ≤ score < 90%: Good, with friction
+- 60% ≤ score < 75%: Needs Work
+- score < 60%: Redesign recommended
 
 ## 3. Applicability matrix
 
@@ -67,8 +71,8 @@ Classify the surface first.
 | 6 | Doherty Threshold | Contextual (interactive widget) | Core | Core | Contextual (search) |
 | 7 | Von Restorff Effect | Core | Contextual (primary action) | Contextual (primary action) | Contextual (callouts) |
 | 8 | Minimize Target Distance | Contextual (interactive widget) | Core | Core | N/A |
-| 9 | Serial Position Effect | Core | Contextual (navigation) | Contextual (step lists, long option lists) | Core |
-| 10 | Peak-End Rule | Contextual (conversion confirmation) | Contextual (task completion) | Core | N/A |
+| 9 | Serial Position Effect | Contextual (navigation, ordered lists) | Contextual (navigation) | Contextual (step lists, long option lists) | Core |
+| 10 | Peak-End Rule | Contextual (any conversion flow: form, sign-up, purchase) | Contextual (completable task) | Core | N/A |
 | 11 | Zeigarnik Effect | Contextual (multi-step widget) | Contextual (onboarding checklist) | Core | N/A |
 | 12 | Law of Prägnanz | Core | Core | Core | Core |
 | 13 | Law of Similarity | Core | Core | Core | Core |
@@ -93,11 +97,11 @@ Option counts and similar numbers are **prompts to look closer, never grades by 
 | 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked) |
 | 4 | Gaps between groups are clearly larger than gaps within groups. Labels sit nearest their own field | Spacing between groups and within groups is ambiguous in one region | Labels or controls read as belonging to the wrong item |
 | 5 | Nothing must be remembered across screens. Long values are chunked | The user must recall a short value across one step | The task needs a value from another screen with no way to view or copy it |
-| 6 | Feedback ≤ 0.1 s, and results ≤ 0.4 s or a progress or skeleton state (Doherty & Thadhani 1982, Card et al. 1991) | Results take 0.4–1 s with no feedback | Over 1 s with no feedback, or input frozen without indication |
+| 6 | Feedback ≤ 0.1 s, and a usable result ≤ 0.4 s; or for longer work, meaningful progress shown and the result in ≤ 10 s (Doherty & Thadhani 1982; Card et al. 1991) | Result in 0.4–1 s with no feedback, or 1–10 s with only an indeterminate spinner or skeleton | Over 1 s with no feedback, input frozen without indication, or over 10 s without determinate progress. A skeleton alone never earns a Pass for a long wait |
 | 7 | One primary action or recommended item is distinct | Several elements compete with the same emphasis | The primary action is less prominent than a secondary one |
 | 8 | Controls sit near the task (inline, contextual, next to the last field) | The control needs a long but direct move | The control is placed so it's routinely missed or needs repeated long moves |
 | 9 | The key items are at the start or end of navigation and lists | A key item is buried mid-list | The primary destination is buried and observed to be missed |
-| 10 | Completion and error states are clear, with next steps | The end state is generic but not confusing | An abrupt or blank end, or an error with no way to recover |
+| 10 | Completion and error states are clear, with next steps | The end state is generic but not confusing | No confirmation, an abrupt or blank end, or an error with no way to recover. A missing confirmation is evidence for Fail, not a reason for N/A |
 | 11 | Progress is visible in multi-step flows ("Step 2 of 4") | Progress is shown but inaccurate or vague | No progress shown in a long mandatory flow |
 | 12 | Clean alignment and predictable shapes *in the structure* | One region is visually ambiguous | The structure has to be decoded before it can be used |
 | 13 | Same function, same look. Different function, different look | One inconsistent control style | Non-interactive text styled like links or buttons, or the reverse |
@@ -125,11 +129,11 @@ If the project declares a visual style (for example one from the `ui-styles` ski
 
 ### Measuring the real hit area
 1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. The effective target is the region where the result is the anchor or button, or one of its descendants. This handles stretched links, overlays and clipping automatically.
-2. **Static CSS only: estimate, and label it "static estimate".** For a stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**: the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
+2. **Static CSS only: estimate, and label it "static estimate".** For a stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**. Start the search **at the anchor that generates the pseudo-element**: if the anchor itself is positioned, the overlay covers only the anchor. Otherwise walk outward to the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
    - Clipping: an ancestor with `overflow: hidden`, `clip-path` or `mask` cuts the area down.
    - Overlays: a sibling with a higher `z-index` covers it.
    - Inert areas: `pointer-events: none` on the pseudo-element.
-   - **Nested controls:** any other link or button inside a stretched-link card must be raised above the overlay (`position: relative; z-index: 2`), or it can't be clicked. That's a Fail under law 13 or law 3.
+   - **Nested controls:** any other link or button inside a stretched-link card must be raised above the overlay (`position: relative; z-index: 2`), or it can't be clicked. Grade click interception under **law 3 (Jakob)** only, because a control that doesn't do what it shows breaks convention. Law 13 is reserved for misleading visual role matches.
    - **Link text:** the anchor's accessible name must describe the destination ("Learn more about Product X", or use `aria-labelledby`). A bare "Learn more" goes in the report as an accessibility note.
 
 ## 7. The 20 laws (summary)

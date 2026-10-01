@@ -28,6 +28,8 @@ Hick · Fitts (target size) · Jakob · Proximity · Miller (memory load) · Doh
 
 Install a tagged release, so you get the reviewed version.
 
+> **Release status:** the `v1.1.0` tag is published together with this README. If `git clone --branch v1.1.0` reports that the tag isn't found, the release hasn't been published yet. Clone without `--branch`, then check that `SKILL.md` says "v1.1", and re-pin once the tag exists.
+
 ### Claude Code
 ```bash
 mkdir -p ~/.claude/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
@@ -35,7 +37,14 @@ mkdir -p ~/.claude/skills && git clone --branch v1.1.0 https://github.com/JohnSi
 ```powershell
 New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
 ```
-For project level, use `.claude/skills/ux-laws` under the project root. The folder name must be `ux-laws`. Claude Code loads the skill on demand from its description.
+For project level, run this from the project root:
+```bash
+mkdir -p .claude/skills && git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
+```
+```powershell
+New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.1.0 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
+```
+The folder name must be `ux-laws`. Claude Code loads the skill on demand from its description.
 
 ### Google Antigravity
 ```bash

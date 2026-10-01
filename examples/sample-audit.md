@@ -1,16 +1,16 @@
 # Worked example: newsletter sign-up card
 
-This example shows the rubric, the Contextual and Not assessed handling, the stretched-link check and the score arithmetic on a small fixture.
+This example shows the rubric, the Contextual, N/A and Not assessed handling, live hit-testing and the score arithmetic on a small fixture. Every measurement below was taken from the fixture rendered in Chromium at **375×812 with touch emulation**.
 
-## Fixture (evidence source: source code only)
+## Fixture
 
 ```html
-<section class="promo" style="position: relative; width: 340px; padding: 24px; border: 1px solid #ccc; border-radius: 12px">
+<section class="promo" style="position: relative; max-width: 340px; padding: 24px; border: 1px solid #ccc; border-radius: 12px">
   <h2>Weekly design notes</h2>
   <p>One email every Friday. Unsubscribe any time.</p>
-  <form action="/subscribe">
+  <form action="/subscribe" method="post">
     <label for="email">Email</label>
-    <input id="email" type="email" required>
+    <input id="email" name="email" type="email" required>
     <button type="submit" style="height: 36px">Subscribe</button>
   </form>
   <a href="/archive" class="archive-link">Learn more</a>
@@ -18,60 +18,63 @@ This example shows the rubric, the Contextual and Not assessed handling, the str
 <style>.archive-link::after { content: ""; position: absolute; inset: 0; }</style>
 ```
 
-Surface type: **Marketing & Landing**. Only source code is available, so there is no live page, no timing and no analytics.
+Measured layout: the label (38×17) sits inline, 4px left of the input (177×21). The button (75×36) is 4px to the input's right. "Learn more" is on the next line. The button has the browser-default grey fill, and the link is the default blue and underlined.
 
-## Audit
+---
 
 # UX Law Audit: Newsletter sign-up card
 
-- **Surface type**: Marketing & Landing
-- **Evidence sources**: source code
-- **UX Score**: **77%** (8 Pass, 1 Warning, 2 Fail, 6 N/A, 3 Not assessed). The calculation is (8 × 1.0 + 1 × 0.5 + 2 × 0.0) / (8 + 1 + 2) = 8.5 / 11.
-- **Band**: Needs Work (capped by blocking rule: yes, because sign-up is the task-critical path and it fails)
+- **Surface type**: Marketing & Landing (touch-first: mobile viewport)
+- **Evidence sources**: source code; live render at 375×812 (touch emulation). No server, timing or analytics.
+- **UX Score**: **79%** (8 Pass, 3 Warning, 1 Fail, 4 N/A, 4 Not assessed). The calculation is (8 × 1.0 + 3 × 0.5 + 1 × 0.0) / (8 + 3 + 1) = 9.5 / 12 = 79.17%.
+- **Band**: Needs Work. The unrounded 79.17% falls in Good (75 ≤ score < 90), but the blocking rule caps it: sign-up is the task-critical path, and it fails under law 3.
 - **Scope note**: Usability heuristics only; not a WCAG/accessibility conformance result.
 
 ### Score breakdown
 | Law | Status | Points | Observation / evidence |
 | :--- | :---: | :---: | :--- |
 | 1. Hick's Law | Pass | 1.0 | One action (Subscribe) and one secondary link. |
-| 2. Fitts's Law (size) | Warning | 0.5 | Contextual trigger: CTA present. The Subscribe button is 36px high, below the 44 touch goal (static estimate). |
-| 3. Jakob's Law | Pass | 1.0 | A standard label, input and button pattern. |
-| 4. Law of Proximity | Pass | 1.0 | The label sits directly above its input. |
+| 2. Fitts's Law (size) | Warning | 0.5 | Trigger: CTA. On a touch-first surface the button is 75×36 and the input 177×21, both below the 44×44 goal. *Measured, but see law 3: the overlay captures both.* |
+| 3. Jakob's Law | **Fail** | 0.0 | Pressing Subscribe doesn't subscribe. `elementFromPoint` at the centre of the button **and** of the input returns `a.archive-link`, because its stretched `::after` covers the whole `position: relative` section. The convention "a button does what it says" is broken on the task-critical path. |
+| 4. Law of Proximity | Pass | 1.0 | The label is 4px from its own input, and it's the only field. |
 | 5. Miller's Law | N/A | – | Contextual trigger absent: no comparison table. |
-| 6. Doherty Threshold | N/A | – | Contextual trigger absent: the form posts to a new page and there's no interactive widget. |
-| 7. Von Restorff Effect | Pass | 1.0 | The button is the only filled control. |
-| 8. Minimize Target Distance | N/A | – | Contextual trigger absent: no interactive widget beyond a single field. |
-| 9. Serial Position Effect | Pass | 1.0 | The primary action comes last in the reading order. |
-| 10. Peak-End Rule | Not assessed | – | The trigger (conversion confirmation) exists, but its page isn't in the evidence. Needs the `/subscribe` response. |
+| 6. Doherty Threshold | Not assessed | – | Trigger present (the form), but there's no server to time. Needs the time to the post-submit response. |
+| 7. Von Restorff Effect | Warning | 0.5 | The primary action uses the default grey fill, while the secondary link is coloured and underlined, so nothing marks Subscribe as primary. |
+| 8. Minimize Target Distance | Pass | 1.0 | Trigger: the form. Subscribe is 4px from the field it submits. |
+| 9. Serial Position Effect | N/A | – | Contextual trigger absent: no navigation or ordered list. |
+| 10. Peak-End Rule | Not assessed | – | Trigger present (an attempted conversion). The confirmation response isn't in the evidence, so the `/subscribe` result is needed. |
 | 11. Zeigarnik Effect | N/A | – | Contextual trigger absent: single step. |
-| 12. Law of Prägnanz | Pass | 1.0 | One card with a simple vertical stack. |
-| 13. Law of Similarity | **Fail** | 0.0 | The stretched `.archive-link::after` covers the whole `position: relative` section, **including the input and the button**, which aren't raised above the overlay. Clicking Subscribe opens `/archive`. |
-| 14. Uniform Connectedness | Pass | 1.0 | A bordered card groups the offer and the form. |
-| 15. Tesler's Law | N/A | – | Contextual trigger absent: no application logic. |
-| 16. Postel's Law | Fail | 0.0 | Contextual trigger: input field. `type="email"` rejects addresses with surrounding spaces, and there's no trimming or hint. |
-| 17. Aesthetic-Usability | Not assessed | – | Rendered visual quality can't be judged from source. Needs a screenshot. |
+| 12. Law of Prägnanz | Pass | 1.0 | One bordered card, with a heading, text, a form row and a link. |
+| 13. Law of Similarity | Pass | 1.0 | The link looks like a link and the button looks like a button. |
+| 14. Uniform Connectedness | Pass | 1.0 | The border groups the offer and the form. |
+| 15. Tesler's Law | Pass | 1.0 | Trigger: the form. Only an email address is asked for. |
+| 16. Postel's Law | Not assessed | – | Trigger: an input field. On the client, the `type="email"` value sanitisation already strips leading and trailing whitespace (HTML spec), so that is not a defect. Server-side normalisation is unknown, and the server's handling of valid variants is needed. |
+| 17. Aesthetic-Usability | Warning | 0.5 | Unstyled browser-default controls with mismatched heights (21px input next to a 36px button). |
 | 18. Parkinson's Law | N/A | – | Contextual trigger absent: single step. |
-| 19. Occam's Razor | Pass | 1.0 | Only one field is requested. |
-| 20. Pareto Principle | Not assessed | – | Core for Marketing, but how Subscribe and the archive link are prioritised needs usage data. N/A would be wrong here, because the law applies. |
+| 19. Occam's Razor | Pass | 1.0 | A single field and no extra confirmation. |
+| 20. Pareto Principle | Not assessed | – | Core for Marketing. Needs usage data for Subscribe vs the archive link. |
 
 ### Key findings
-#### 1. Law of Similarity – Fail
-- **Observed**: the archive link's stretched overlay captures clicks on the form controls.
-- **Evidence / location**: `.archive-link::after { position: absolute; inset: 0 }`, with the containing block `section.promo` (`position: relative`). The input and button have no `position` or `z-index`.
-- **Remediation**: remove the stretched link (the card isn't a single destination), or raise the form: `.promo form { position: relative; z-index: 2; }`. Also rename the link to "Read past issues" (WCAG 2.4.4).
+#### 1. Jakob's Law – Fail (task-critical, blocking)
+- **Observed**: the archive link's stretched overlay captures taps on the input and the button.
+- **Evidence / location**: hit-tests at the input and button centres return `a.archive-link`. The containing-block search starts at the anchor (`position: static`), and the nearest positioned ancestor is `section.promo` (`position: relative`).
+- **Remediation**: remove the stretch, because the card isn't a single destination. Alternatively raise the form with `.promo form { position: relative; z-index: 2; }`.
 
-#### 2. Postel's Law – Fail
-- **Observed**: pasted addresses with leading or trailing spaces are rejected.
-- **Remediation**: trim the value before validating (`input.value = input.value.trim()` on `change`), and keep the server-side check.
+#### 2. Fitts's Law – Warning
+- **Remediation**: `min-height: 44px` on the input and the button.
 
-#### 3. Fitts's Law – Warning
-- **Remediation**: `min-height: 44px` on the button.
+#### 3. Von Restorff Effect – Warning
+- **Remediation**: give Subscribe the accent fill, and leave the archive link as plain text weight.
+
+#### 4. Aesthetic-Usability – Warning
+- **Remediation**: style the controls with shared height, radius and font tokens.
 
 ### Not assessed — evidence needed
+- Doherty: the time from submit to response.
 - Peak-End: the confirmation page returned by `/subscribe`.
-- Aesthetic-Usability: a rendered screenshot.
+- Postel: the server's handling of valid address variants.
 - Pareto: click data for Subscribe vs the archive link.
 
 ### Conformance notes (not scored)
-- Link text "Learn more" doesn't describe its destination (WCAG 2.4.4).
-- The 36px button is above the 24px minimum in 2.5.8, so there's no 2.5.8 issue.
+- Link text "Learn more" doesn't describe its destination (WCAG 2.4.4). Use "Read past issues".
+- 2.5.8 can't be evaluated meaningfully yet. The stretched overlay is itself a target that covers both controls, so any spacing circle intersects it. Re-check after the fix: the button (36px) passes on size, and the 21px-high input will need the spacing test against its neighbours, which are 4px away.

@@ -65,6 +65,8 @@ When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applica
 
 ## Changelog
 
+- **v1.2.1 (unreleased)**
+  - Law 3 now covers buttons with no explicit `type` inside a form: a Warning in general, a Fail when a Cancel, Close or Back button would submit the form. Found by a blind comparison of two design skill sets, where both left such buttons untyped.
 - **v1.2.0**
   - Read-only hit-testing snippet, and live-procedure wording that never submits a live form to confirm activation.
   - Provenance table with a source reference for each origin and caveat. Unconfirmed citations are marked, and Ghibellini and Meier is corrected to 2025.

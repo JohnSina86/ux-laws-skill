@@ -3,7 +3,7 @@ name: ux-laws
 description: >-
   Evidence-based UX audits of a page, flow or component against the laws of UX (Hick, Fitts, Jakob, Gestalt, Doherty, Peak-End), with a scored rubric, Not assessed handling and hit-area measurement rules. Use when asked to review, audit, score or critique UX or interaction design. Not a WCAG audit (use an accessibility review), a visual-style critique (see ui-styles) or performance profiling.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # UX & Interaction Design Laws Skill (v1.2)
@@ -91,7 +91,7 @@ Option counts and similar numbers are **prompts to look closer, never grades by 
 | :-: | :--- | :--- | :--- |
 | 1 | Choices are organised for the task: grouped, ordered, or with a recommended default | A flat set of options with equal visual weight, and no default or grouping | Observed hesitation or errors, or the primary action can't be told apart from the alternatives |
 | 2 | Primary and frequent targets meet the touch goal (§6) on touch-first surfaces, and are comfortable with a pointer | A primary or frequent target, **or any target within 8px of another target**, is below the touch goal on a touch-first surface | Measured interaction failure: overlapping hit areas or mis-taps on a primary action |
-| 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked) |
+| 3 | Standard patterns behave as users expect (logo goes home, search in the header, recognisable controls) | A convention is changed but still discoverable; or a `<button>` inside a `<form>` has no explicit `type`, so it submits by default | A convention is broken so the task fails or misleads (a fake button, scrolling hijacked; an untyped Cancel, Close or Back button that submits the form) |
 | 4 | Gaps between groups are clearly larger than gaps within groups. Labels sit nearest their own field | Spacing between groups and within groups is ambiguous in one region | Labels or controls read as belonging to the wrong item |
 | 5 | Nothing must be remembered across screens. Long values are chunked | The user must recall a short value across one step | The task needs a value from another screen with no way to view or copy it |
 | 6 | Acknowledgement ≤ 0.1 s, **and** one of: result ≤ 0.4 s; a progress or skeleton state until a result ≤ 10 s; or determinate progress (with cancel where possible) for longer work | Acknowledgement in 0.1–1 s; **or** result in 0.4–1 s with no progress state | No acknowledgement within 1 s; **or** result over 1 s with no progress state; **or** result over 10 s without determinate progress |

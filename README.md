@@ -30,28 +30,28 @@ Hick · Fitts (target size) · Jakob · Proximity · Miller (memory load) · Doh
 
 Install a tagged release, so you get the reviewed version.
 
-> **Current release: `v1.2.1`.** To confirm an install, run `git -C <install dir> describe --tags`, which should print `v1.2.1`.
+> **Current release: `v1.3.0`.** To confirm an install, run `git -C <install dir> describe --tags`, which should print `v1.3.0`.
 
 ### Claude Code
 ```bash
-mkdir -p ~/.claude/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
+mkdir -p ~/.claude/skills && git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.claude/skills/ux-laws
 ```
 ```powershell
-New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
+New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null; git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git "$HOME\.claude\skills\ux-laws"
 ```
 For project level, run this from the project root:
 ```bash
-mkdir -p .claude/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
+mkdir -p .claude/skills && git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git .claude/skills/ux-laws
 ```
 ```powershell
-New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
+New-Item -ItemType Directory -Force ".claude\skills" | Out-Null; git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git ".claude\skills\ux-laws"
 ```
 The folder name must be `ux-laws`. Claude Code loads the skill on demand from its description.
 
 ### Google Antigravity
 ```bash
-mkdir -p .agents/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws          # project
-mkdir -p ~/.gemini/config/skills && git clone --branch v1.2.1 https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws   # global
+mkdir -p .agents/skills && git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git .agents/skills/ux-laws          # project
+mkdir -p ~/.gemini/config/skills && git clone --branch v1.3.0 https://github.com/JohnSina86/ux-laws-skill.git ~/.gemini/config/skills/ux-laws   # global
 ```
 
 ### Cursor, Copilot and other tools without native skills
@@ -65,7 +65,7 @@ When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applica
 
 ## Changelog
 
-- **v1.3.0 (unreleased)**
+- **v1.3.0**
   - `references/page-probe.md`: a read-only page measurement snippet that runs under strict content-security policies. It measures document overflow (authoritative), clipped and unclipped wide elements, and targets under the 44px goal by their own box. Inline links are kept and flagged, and stretched links stay listed plus a `needsHitTest` list until hit-tested. It also returns 2.5.8 candidates with the spacing test, small text, per-block characters per line counted from text geometry, heading order and missing alt. It also covers false-positive rules and a default viewport set (375, 768, 1440).
   - `references/multi-surface.md`: auditing several pages or viewports. It covers a coverage matrix, a surface type and 20-row table per template, the worst status across occurrences, triggers and N/A across pages, coverage gaps, re-audit closure per occurrence, and no site-wide score.
   - Two inert fixtures (`site-sections.html`, `overflow-unclipped.html`), a graders-only reference, and functional eval 6 (a two-viewport live audit). The laws, rubric, statuses and score formula are unchanged.

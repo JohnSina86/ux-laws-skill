@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture: unclipped decoration</title>
+<!-- Inert fixture: static markup, no script. One decoration wider than the viewport and nothing
+     clips it, so the page scrolls sideways. Used by the page-probe check in evals/README.md. -->
+<style>
+  body { margin: 0; font: 16px/1.5 Arial, sans-serif; }
+  .deco { width: 150vw; height: 40px; background: #dde; }
+</style>
+<h1>Unclipped decoration</h1>
+<div class="deco" aria-hidden="true"></div>

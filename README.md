@@ -65,6 +65,11 @@ When reviewing UI or UX, follow .agents/skills/ux-laws/SKILL.md (rubric, applica
 
 ## Changelog
 
+- **v1.3.0 (unreleased)**
+  - `references/page-probe.md`: a read-only page measurement snippet that runs under strict content-security policies. It measures document overflow (authoritative), clipped and unclipped wide elements, and targets under the 44px goal by their own box. Inline links are kept and flagged, and stretched links stay listed plus a `needsHitTest` list until hit-tested. It also returns 2.5.8 candidates with the spacing test, small text, per-block characters per line counted from text geometry, heading order and missing alt. It also covers false-positive rules and a default viewport set (375, 768, 1440).
+  - `references/multi-surface.md`: auditing several pages or viewports. It covers a coverage matrix, a surface type and 20-row table per template, the worst status across occurrences, triggers and N/A across pages, coverage gaps, re-audit closure per occurrence, and no site-wide score.
+  - Two inert fixtures (`site-sections.html`, `overflow-unclipped.html`), a graders-only reference, and functional eval 6 (a two-viewport live audit). The laws, rubric, statuses and score formula are unchanged.
+  - Found in two live audits of a static marketing site, where a hand-written probe produced false positives (stretched cards counted as small targets, lines counted from height) and the 20-row table had no rule for several templates or viewports.
 - **v1.2.1**
   - Law 3 now covers buttons with no explicit `type` inside a form: a Warning in general, a Fail when a Cancel, Close or Back button would submit the form. Found by a blind comparison of two design skill sets, where both left such buttons untyped.
 - **v1.2.0**

@@ -74,6 +74,25 @@
         "Names source code as the evidence and marks usage-based and rendering-dependent laws Not assessed with the evidence needed",
         "Does not claim the form is accessible or WCAG-conformant"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "Audit the UX of this marketing page at phone (375px) and desktop (1440px) widths. It is served at http://127.0.0.1:4180/site-sections.html and you can open it in a browser; the source is attached too. Use the ux-laws report template.",
+      "expected_output": "A live, two-viewport audit that measures with the page probe before grading, keeps document overflow authoritative, treats the stretched card as a hit-test prompt rather than a small target, records the coverage, and does not turn line length into a grade.",
+      "files": [
+        "evals/fixtures/site-sections.html"
+      ],
+      "expectations": [
+        "Runs the references/page-probe.md snippet at both viewports and records a coverage line naming exactly the page and the two viewports measured",
+        "Reports document overflow as 0 at both widths and sets the wide decoration aside only because it is clipped (clipped: true) and the page does not scroll",
+        "Takes 'Read the case' from the probe's needsHitTest list and hit-tests the stretched card (or labels the overlay size a static estimate) before grading law 2; it neither drops it unverified nor grades its 90x16 own box as the hit area",
+        "Keeps the inline 'method note' link in the usability results while excluding it from the 2.5.8 conformance candidates, and treats the standalone 'Explore this product', 'Edit' and 'Delete' links as targets, not inline exceptions",
+        "Grades the #proximity bands under law 4 (Proximity) with spacing evidence (the 160px gap between each heading and its own body against the 4px gap between bands, which leaves the alt band's right-hand heading nearer the next band), not on heading placement alone; and grades the heading link plus the duplicate 'Explore this product' link to the same page under law 19 (Occam) or law 13, citing the viewport of the evidence",
+        "Takes the empty 'Open the price index' anchor from needsHitTest and does not ignore it because its own box is 0x0, and does not grade the collapsed panel's hidden button or text as visible",
+        "Does not grade any law on line length alone; at 1440px the padded and line-height:normal paragraphs are each one line of about 92-93 characters and are at most an unscored readability note",
+        "Contains exactly one row for each of the 20 laws with counts that match, and the scope note that this is not a WCAG conformance result",
+        "Does not read or reproduce examples/sample-audit.md or evals/expected/"
+      ]
     }
   ]
 }

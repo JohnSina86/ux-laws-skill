@@ -1,0 +1,110 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fixture: site sections</title>
+<!-- Inert fixture: static markup, no script. Used by evals/evals.json and the page-probe check in
+     evals/README.md. Each section reproduces one case; this page must have no horizontal overflow. -->
+<style>
+  body { margin: 0; font: 16px/1.5 Arial, sans-serif; }
+  section { padding: 24px 16px; border-top: 1px solid #ccc; }
+  .card { position: relative; max-width: 320px; padding: 24px; border: 1px solid #ccc; border-radius: 12px; }
+  .card-link { font-size: 14px; }
+  .card-link::after { content: ""; position: absolute; inset: 0; }
+  /* Proximity case: inside a band the heading and its body sit 160px apart, while the bands sit
+     only 4px apart, so on the alt band the heading is nearer the next band's text than its own. */
+  .band { display: grid; grid-template-columns: 1fr 2fr; column-gap: 160px; max-width: 1100px; margin: 0 0 4px; }
+  .band h2, .band p { margin: 0; }
+  .band.alt h2 { order: 2; }
+  .tile { position: relative; max-width: 320px; height: 120px; border: 1px solid #ccc; }
+  .tile-link::after { content: ""; position: absolute; inset: 0; }
+  .collapsed { height: 0; overflow: hidden; }
+  .wide-col { max-width: 1100px; }
+  .padded { padding: 40px 0; line-height: 20px; max-width: 1100px; font-size: 15px; }
+  .normal { line-height: normal; max-width: 1100px; font-size: 15px; }
+  .mixed { max-width: 1100px; font-size: 15px; }
+  .mixed .big { font-size: 1.6em; }
+  /* Line bridge: the superscript sits above the baseline text and only the larger span overlaps
+     both, so the line is one line only if clustering compares against every rect on it. */
+  .bridge { max-width: 1100px; font-size: 15px; line-height: 3; }
+  .bridge .hi { font-size: 9px; vertical-align: 21px; }
+  .bridge .mid { font-size: 26px; }
+  /* Line merge: the lowered span and the baseline text don't overlap enough to share a line, and
+     the small span, which sorts after both, overlaps each; the line is one line only if lines
+     already formed merge through it. */
+  .merge { max-width: 1100px; font-size: 15px; line-height: 3; }
+  .merge .low { vertical-align: -10px; }
+  .merge .tiny { font-size: 9px; vertical-align: -5.5px; }
+  .wrap { display: contents; }
+  /* A bordered collapsed panel: its border box is 2px high, but its clipping area is 0px. */
+  .bordered { border: 1px solid #ccc; }
+  .bordered button, .bordered img { display: block; }
+  /* Axis clip: only the x axis clips, so the button shifted below the 20px box is still shown. */
+  .xclip { height: 20px; overflow-x: clip; overflow-y: visible; margin-bottom: 48px; }
+  .shifted { transform: translateY(40px); }
+  .clip { overflow: clip; }
+  .deco { width: 150vw; height: 40px; background: #dde; }
+</style>
+
+<section id="stretched">
+  <article class="card">
+    <h2>Weather index</h2>
+    <p>Rainfall, wind and temperature triggers.</p>
+    <a href="/weather" class="card-link">Read the case</a>
+  </article>
+</section>
+
+<section id="proximity">
+  <div class="band"><h2>What we model</h2><p>Hazard, exposure and basis risk at each site.</p></div>
+  <div class="band alt"><h2>Who it is for</h2><p>Insurers, MGAs and reinsurers launching parametric lines.</p></div>
+  <div class="band"><h2>What you get</h2><p>A price, a structure and a recommendation.</p></div>
+</section>
+
+<section id="duplicate">
+  <h2><a href="/price-index">Commodity price index</a></h2>
+  <p>We model the price, design the contract and measure the risk it removes.</p>
+  <p><a href="/price-index" class="more">Explore this product</a></p>
+</section>
+
+<section id="bullets">
+  <ul class="wide-col">
+    <li>Structure options: triggers and exits.</li>
+    <li>Technical price and the risk profile.</li>
+    <li>Backtest against past payouts so far.</li>
+  </ul>
+</section>
+
+<section id="lines">
+  <p class="padded">A single line of about one hundred characters, sitting in a box with heavy vertical padding.</p>
+  <p class="normal">A paragraph whose line-height is normal, so a probe cannot divide by a number it has not got.</p>
+  <p class="mixed">One line with a superscript<sup>2</sup> and a <span class="big">larger</span> inline span, about a hundred characters.</p>
+  <p>Inline links stay in the results: read the <a href="/method">method note</a> before you price a cover.</p>
+  <p class="bridge">Base text <sup class="hi">hi</sup> <span class="mid">mid</span> and more base text after it.</p>
+  <p class="spaced"><span>Alpha</span> <span>Beta</span></p>
+  <p class="merge">Base text <span class="low">lowered words</span> <span class="tiny">small</span> and more base text.</p>
+  <p class="contents"><span class="wrap">Text inside a display contents wrapper still renders and has geometry.</span></p>
+  <p class="hidden-prose"><span hidden>These are several hidden words describing this action</span><a href="/open">Open</a></p>
+</section>
+
+<section id="actions">
+  <ul class="actions"><li><a href="/edit">Edit</a> <a href="/delete">Delete</a></li>
+    <li>Alice <a href="/users/alice/edit">Edit</a> <a href="/users/alice/delete">Delete</a></li>
+    <li>Alexandria Catherine Johnson <a href="/users/alexandria/edit">Edit</a> <a href="/users/alexandria/delete">Delete</a></li></ul>
+</section>
+
+<section id="axis-clip">
+  <div class="xclip"><button type="button" class="shifted">Shifted action</button></div>
+</section>
+
+<section id="empty-anchor">
+  <div class="tile"><h2>Price index</h2><a class="tile-link" href="/price-index" aria-label="Open the price index"></a></div>
+</section>
+
+<section id="collapsed">
+  <div class="collapsed"><p>Hidden details that a closed panel holds.</p><button type="button">Hidden action</button><img width="40" height="40"></div>
+  <div class="collapsed bordered"><button type="button">Bordered hidden action</button></div>
+  <div class="collapsed bordered"><img width="40" height="40"></div>
+</section>
+
+<section id="clipped">
+  <div class="clip"><div class="deco" aria-hidden="true"></div></div>
+</section>

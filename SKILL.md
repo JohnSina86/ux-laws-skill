@@ -3,10 +3,10 @@ name: ux-laws
 description: >-
   Evidence-based UX audits of a page, flow or component against the laws of UX (Hick, Fitts, Jakob, Gestalt, Doherty, Peak-End), with a scored rubric, Not assessed handling and hit-area measurement rules. Use when asked to review, audit, score or critique UX or interaction design. Not a WCAG audit (use an accessibility review), a visual-style critique (see ui-styles) or performance profiling.
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
 ---
 
-# UX & Interaction Design Laws Skill (v1.2)
+# UX & Interaction Design Laws Skill (v1.3)
 
 A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX and HCI. Every grade must cite observable evidence. If the evidence isn't available, the law is reported as *Not assessed* instead of guessed.
 
@@ -15,10 +15,9 @@ A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX
 ---
 
 ## 1. Evidence sources
-
 | Source | Can assess | Cannot assess |
 | :--- | :--- | :--- |
-| Live page (browser tools) | Layout, measured hit areas, interaction feedback, response timing, flows | Usage frequency, real user errors |
+| Live page (browser tools; measure with [`references/page-probe.md`](references/page-probe.md)) | Layout, measured hit areas, interaction feedback, response timing, flows | Usage frequency, real user errors |
 | Source code (HTML/CSS/JS) | Structure, static hit-area estimates, validation logic, defaults | Rendered layout (estimate only), timing |
 | Screenshot / design file | Layout, grouping, hierarchy, visual emphasis | Hit areas, timing, behaviour |
 | Analytics / research data | Frequency (Pareto), errors, drop-off | — |
@@ -26,7 +25,6 @@ A framework for **consistent, evidence-backed** UX reviews against 20 laws of UX
 Record which sources you had at the top of the report.
 
 ## 2. Statuses and score
-
 | Status | Points | Use when |
 | :--- | :---: | :--- |
 | **Pass** | 1.0 | The evidence in §4 for Pass is observed. |
@@ -53,7 +51,7 @@ $$\text{UX Score} = \frac{\sum \text{points}}{\text{Pass} + \text{Warning} + \te
 
 ## 3. Applicability matrix
 
-Classify the surface first.
+Classify the surface first. For several pages or viewports, classify per template and combine evidence as [`references/multi-surface.md`](references/multi-surface.md) says.
 - **Core:** always scored.
 - **Contextual:** scored only if the named trigger element is present. Name the trigger in the Observation column. Mark it **N/A only when the evidence shows the trigger is absent** from the audited scope (for example, the full page source has no form). If the evidence can't show whether the trigger exists (a cropped screenshot, or one view of a long page), mark it **Not assessed** and name the missing view.
 - **N/A:** not scored.
@@ -125,7 +123,7 @@ If the project declares a visual style (for example one from the `ui-styles` ski
   Record which check decided the outcome.
 
 ### Measuring the real hit area
-1. **Live page (preferred).** Sample points across the visible card or row with `document.elementFromPoint(x, y)`. A point belongs to the target if the hit element is the anchor or button, or one of its descendants, **or** a container whose own or delegated handler activates the same action. Look for an inline `onclick`, `cursor: pointer`, and framework handlers in the DevTools Event Listeners panel. Page JavaScript can't see handlers added with `addEventListener`, so report such an area as **unknown, confirm manually**. Confirm only with a safe manual click on a non-destructive page, **never by submitting a live form**. A non-mutating snippet is in [`references/hit-testing.md`](references/hit-testing.md). This handles stretched links, overlays, clipping and whole-card handlers. If a whole-card handler has no semantic link or button, report it as an accessibility note.
+1. **Live page (preferred).** Find candidates first with [`references/page-probe.md`](references/page-probe.md); its `stretched` flag is a prompt, not a result. Then sample points across the visible card or row with `document.elementFromPoint(x, y)`. A point belongs to the target if the hit element is the anchor or button, or one of its descendants, **or** a container whose own or delegated handler activates the same action. Look for an inline `onclick`, `cursor: pointer`, and framework handlers in the DevTools Event Listeners panel. Page JavaScript can't see handlers added with `addEventListener`, so report such an area as **unknown, confirm manually**. Confirm only with a safe manual click on a non-destructive page, **never by submitting a live form**. A non-mutating snippet is in [`references/hit-testing.md`](references/hit-testing.md). This handles stretched links, overlays, clipping and whole-card handlers. If a whole-card handler has no semantic link or button, report it as an accessibility note.
 2. **Static CSS only: estimate, and label it "static estimate".** First confirm the pseudo-element is **actually generated and hit-testable**: `content` isn't `none` or `normal`, `display` isn't `none`, `visibility` is visible, and `pointer-events` isn't `none`. On a page, read `getComputedStyle(anchor, '::after')`. If any of these fails or can't be determined, measure the anchor's own box or mark the estimate uncertain. For a generated stretched link, where `::before` or `::after` has `position: absolute` and `inset: 0`, the pseudo-element covers its **containing block**. Start the search **at the anchor that generates the pseudo-element**: if the anchor itself is positioned, the overlay covers only the anchor. Otherwise walk outward to the nearest ancestor that is positioned or that establishes one in another way. Examples of the latter are `transform`, `translate`, `rotate`, `scale`, `perspective`, `filter`, `backdrop-filter`, `contain: layout|paint|strict|content`, `container-type`, and the matching `will-change`. This list isn't exhaustive. Then check:
    - Clipping: an ancestor with `overflow: hidden`, `clip-path` or `mask` cuts the area down.
    - Overlays: a sibling with a higher `z-index` covers it.
@@ -167,6 +165,7 @@ The score breakdown **must contain one row for each of the 20 laws**, including 
 
 - **Surface type**: [Marketing & Landing | SaaS & Dashboard | Form & Wizard | Content & Docs]
 - **Evidence sources**: [live page | source code | screenshot | analytics]
+- **Coverage** (several pages or viewports): [pages × viewports measured, and gaps; see references/multi-surface.md]
 - **UX Score**: **XX%** | *No score — insufficient evidence* ([P] Pass, [W] Warning, [F] Fail, [NA] N/A, [NS] Not assessed)
 - **Band**: [Strong | Good, with friction | Needs Work | Redesign recommended] [capped by blocking rule: yes/no]
 - **Scope note**: Usability heuristics only; not a WCAG/accessibility conformance result.
@@ -216,4 +215,6 @@ Grade structure, not aesthetic (section 5). The `ui-styles` index cites these la
 ## References
 - [`references/principles-breakdown.md`](references/principles-breakdown.md): each law's definition, scope and Do and Don't.
 - [`references/hit-testing.md`](references/hit-testing.md): the live hit-area snippet.
+- [`references/page-probe.md`](references/page-probe.md): the read-only page measurement snippet, false-positive rules and the viewport set.
+- [`references/multi-surface.md`](references/multi-surface.md): coverage, per-template classification and how evidence combines across pages and viewports.
 - [`references/provenance.md`](references/provenance.md): sources, caveats and what was not confirmed.

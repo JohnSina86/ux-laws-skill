@@ -49,7 +49,7 @@ This reference covers the 20 UX laws used by `SKILL.md`: their origins, caveats,
 
 * **Origin**: Paul Fitts (1954). The Shannon formulation $MT = a + b\log_2(D/W + 1)$ is the one used in ISO 9241-9.
 * **Formula**: $MT = a + b \cdot \log_2 \left( \frac{2D}{W} \right)$
-* **In this skill**: law 2 grades **W (size)** only. **D (distance)** is graded by law 8, so the same element is never cited under both.
+* **In this skill**: law 2 grades **W (size)** only. **D (distance)** is graded by law 8. The same defect is never graded under both, but one element may appear under both when size and distance each have their own evidence (see `SKILL.md`, laws 2 and 8).
 * **Scope**: Core for SaaS and Forms. Contextual for Marketing (CTAs) and Content (navigation).
 * **Size goal vs conformance**: Fitts's Law sets no minimum size. The 44×44 goal comes from Apple's HIG and WCAG 2.5.5 (AAA), and 48×48 dp from Material. The AA requirement is WCAG 2.2 **2.5.8: 24×24 CSS px**, with a spacing alternative and exceptions (`SKILL.md` §6). Missing the 44 goal is a Warning on touch-first surfaces. A 2.5.8 result is a separate conformance note.
 
